@@ -1,43 +1,103 @@
 <script>
   import { onMount } from 'svelte';
+  import Column from '../../lib/Column.svelte';
 
   /** @type {import('./$types').PageData} */
   // export let data;
+  let sessions = [];
+  let session = null;
+  let waitingMsg = 'Loading sessions...';
 
   onMount(() => {
-    let left = 0;
+    ipc.send(
+      'session',
+      JSON.stringify({
+        type: 'readystate',
+        readyState: 'ready',
+      })
+    );
 
-    // Listen for messages
-    ipc.on('control', (e, msg) => {
+    ipc.on('session', (e, msg) => {
       msg = JSON.parse(msg);
-      console.log(msg);
-      const lr = msg.button.match(/(left|right)/)?.[0];
-      if (lr) {
-        if (lr === 'left') {
-          left -= 10;
-        } else {
-          left += 10;
-        }
-        document.getElementById('testToken').style.left = left + 'px';
+      if (msg.type === 'listsessions' && msg.sessions) {
+        sessions = msg.sessions;
+        waitingMsg = 'No saved sessions found';
+      } else if (msg.type === 'session') {
+        // TODO save session in sessionStorage
+        session = msg.session;
       }
     });
 
-    document.getElementById('test-msg').addEventListener('click', () => {
-      ipc.send('main', 'Test message');
+    ipc.on('players', (e, msg) => {
+      msg = JSON.parse(msg);
+      if (msg.type === 'allplayers') {
+        session.players = msg.players;
+      }
     });
   });
+
+  function newSession(name) {
+    ipc.send(
+      'session',
+      JSON.stringify({
+        type: 'newsession',
+        name,
+      })
+    );
+  }
+
+  function selectSession(id) {
+    ipc.send(
+      'session',
+      JSON.stringify({
+        type: 'session',
+        id,
+      })
+    );
+  }
 </script>
 
-<h1>Play</h1>
-<div id="testToken" />
-<br /><br />
-<button id="test-msg">Send test message</button>
+{#if !session}
+  <h1>Select or create a session</h1>
+  <Column>
+    {#if sessions.length}
+      <h2>Select a session</h2>
+      <form
+        on:submit={(e) => {
+          e.preventDefault();
+          const id = new FormData(e.target).get('id');
+          selectSession(id);
+        }}
+      >
+        <select name="id">
+          {#each sessions as sessionOption}
+            <option value={sessionOption.id}>{sessionOption.name}</option>
+          {/each}
+        </select>
+        <button>Select</button>
+      </form>
+    {:else}
+      <h2>{waitingMsg}</h2>
+    {/if}
 
-<style>
-  #testToken {
-    width: 1em;
-    aspect-ratio: 1;
-    background: red;
-    position: absolute;
-  }
-</style>
+    <form
+      on:submit={(e) => {
+        const name = new FormData(e.target).get('name');
+        if (!name) return;
+        e.preventDefault();
+        newSession(name);
+      }}
+    >
+      <h2>Create a new session</h2>
+      <label>Session name: <input type="text" name="name" required /></label>
+      <button>Create</button>
+    </form>
+  </Column>
+{:else}
+  <h1>Session: {session.name}</h1>
+  {#if console.log(session.players) || session.players}
+    {#each Object.entries(session.players) as player}
+      <p>{player[0]}</p>
+    {/each}
+  {/if}
+{/if}

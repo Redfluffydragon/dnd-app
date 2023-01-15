@@ -72,6 +72,49 @@ function createMainWindow() {
     mainwindow.webContents.send('ip', addresses[0]);
   });
 
+  ipcMain.on('session', (event, data) => {
+    data = JSON.parse(data);
+    console.log(data);
+
+    if (data.type === 'readystate' && data.readyState === 'ready') {
+      if (session) {
+        selectSession(session);
+      }
+      else {
+        mainwindow.webContents.send('session', JSON.stringify({
+          type: 'listsessions',
+          sessions: sessionIDs,
+        }));
+      }
+    }
+    else if (data.type === 'newsession') {
+      const now = Date.now();
+      // Add new session name to list
+      sessionIDs.push({
+        name: data.name,
+        id: now,
+      });
+      // Save session name
+      store.set('sessionIDs', sessionIDs);
+
+      // Create new session
+      session = {
+        name: data.name,
+        id: now,
+        createdAt: now,
+        players: {},
+      }
+      // Save session
+      store.set(`sessions.${session.id}`, session);
+
+      selectSession(session);
+    }
+    else if (data.type === 'session') {
+      session = store.get(`sessions.${data.id}`);
+      selectSession(session);
+    }
+  });
+
   // Express server for controls
   const staticDir = isdev ? '/build' : '';
   exApp
@@ -89,24 +132,42 @@ function createMainWindow() {
 
         // parse for use here
         const unstrung = JSON.parse(msg);
+        if (!session) {
+          tempSockets.push(ws);
+          ws.send(response(503, {
+            msg: 'Session not started yet',
+          }));
+          return;
+        }
+        else if (unstrung.type === 'controllerconnected') {
+          ws.send(response(200, {
+            type: 'sessionstart',
+          }));
+        }
+
         if (unstrung.controllerID) {
-          if (unstrung.newPlayer) {
-            if (!players[unstrung.controllerID]) {
-              players[unstrung.controllerID] = {};
-            }
-            else {
-              ws.send(response(409, {
-                msg: 'Player names must be unique',
-              }))
-              return;
-            }
+          if (unstrung.newPlayer && session.players[unstrung.controllerID]) {
+            ws.send(response(409, {
+              msg: 'Player names must be unique',
+            }));
+            return;
           }
+          if (!session.players[unstrung.controllerID]) {
+            session.players[unstrung.controllerID] = {};
+          }
+          // link socket to player id
           sockets[unstrung.controllerID] = ws;
+
+          mainwindow.webContents.send('players', JSON.stringify({
+            type: 'allplayers',
+            players: session.players
+          }));
+
           ws.send(response(200, {
             type: 'playeradded',
             id: unstrung.controllerID,
           }));
-          store.set('players', players);
+          store.set(`sessions.${session.name}.players`, session.players);
         }
       });
     })
@@ -117,6 +178,12 @@ function createMainWindow() {
 
 // App-specific logic
 
+/**
+ * Create and stringify a response. Loosely based on HTTP responses.
+ * @param {number} status The HTTP status code
+ * @param {*} body Must be stringifiable
+ * @returns {string} The response body and status stringified
+ */
 function response(status, body) {
   return JSON.stringify({
     ...body,
@@ -125,10 +192,30 @@ function response(status, body) {
   })
 }
 
+function notifyControllers(msg) {
+  for (const socket of tempSockets) {
+    socket.send(msg);
+  }
+}
+
+function selectSession(session) {
+  mainwindow.webContents.send('session', response(200, {
+    type: 'session',
+    session,
+  }));
+
+  notifyControllers(response(200, {
+    type: 'sessionstart',
+  }));
+}
+
 const store = new Store();
 
-const players = store.get('players') || {};
+const sessionIDs = store.get('sessionIDs') || [];
 
+let session = null;
+
+const tempSockets = [];
 // store sockets separately because they don't need to be persistently stored
 const sockets = {};
 

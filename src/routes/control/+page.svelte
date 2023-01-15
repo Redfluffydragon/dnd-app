@@ -8,6 +8,7 @@
   let id = '';
   let socket;
   let error = '';
+  let waitingMsg = 'Trying to connect...';
 
   onMount(() => {
     id = localStorage.getItem('dnd-id') || '';
@@ -17,10 +18,10 @@
 
     // Connection opened
     socket.addEventListener('open', (event) => {
+      waitingMsg = 'Connected, waiting for session to start';
       socket.send(
         JSON.stringify({
-          controllerID: id,
-          newPlayer: false,
+          type: 'controllerconnected',
         })
       );
     });
@@ -34,10 +35,23 @@
       const e = JSON.parse(event.data);
 
       if (e.ok) {
-        if (e.type === 'playeradded') {
+        if (e.type === 'sessionstart') {
+          waitingMsg = null;
+
+          if (id) {
+            socket.send(
+              JSON.stringify({
+                controllerID: id,
+                newPlayer: false,
+              })
+            );
+          }
+        } else if (e.type === 'playeradded') {
           id = e.id;
           localStorage.setItem('dnd-id', e.id);
         }
+      } else if (e.status === 503) {
+        // session not started yet, do nothing
       } else {
         error = e.msg;
       }
@@ -61,7 +75,9 @@
   });
 </script>
 
-{#if !id}
+{#if waitingMsg}
+  <h1>{waitingMsg}</h1>
+{:else if !id}
   <h1>Add a new controller</h1>
   <form
     on:submit={(e) => {
