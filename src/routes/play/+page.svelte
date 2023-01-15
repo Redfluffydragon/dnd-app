@@ -9,8 +9,9 @@
 
     // Listen for messages
     ipc.on('control', (e, msg) => {
+      msg = JSON.parse(msg);
       console.log(msg);
-      const lr = msg.match(/(left|right)/)?.[0];
+      const lr = msg.button.match(/(left|right)/)?.[0];
       if (lr) {
         if (lr === 'left') {
           left -= 10;
