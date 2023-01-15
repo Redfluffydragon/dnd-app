@@ -5,7 +5,7 @@
   // export let data;
 
   onMount(() => {
-    const socket = new WebSocket(`ws://${location.host}/main`);
+    const socket = new WebSocket(`ws://${location.host}/play`);
 
     // Connection opened
     socket.addEventListener("open", (event) => {

@@ -60,7 +60,7 @@ function createMainWindow() {
         res.sendFile(path.join(__dirname, `../build/${req.params[0] || 'index'}.html`));
       }
     })
-    .ws('/main', (ws, req) => {
+    .ws('/play', (ws, req) => {
       mainSocket = ws;
       ws.on('message', msg => {
         console.log(msg);
