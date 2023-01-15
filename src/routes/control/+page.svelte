@@ -38,8 +38,7 @@
           id = e.id;
           localStorage.setItem('dnd-id', e.id);
         }
-      }
-      else {
+      } else {
         error = e.msg;
       }
     });
@@ -68,7 +67,7 @@
     on:submit={(e) => {
       if (!browser) return;
 
-      const data = new FormData(e.target)
+      const data = new FormData(e.target);
       const newID = data.get('id');
       if (!newID) return;
       e.preventDefault();
@@ -84,7 +83,9 @@
     <label
       >Please enter a player ID: <input type="text" name="id" required /></label
     >
-    <label>Add as new player: <input type="checkbox" name="new" checked></label>
+    <label
+      >Add as new player: <input type="checkbox" name="new" checked /></label
+    >
     <br />
     <button>Join</button>
     <p class="error">{error}</p>
