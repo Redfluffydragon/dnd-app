@@ -7,6 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script>
     const ipc = window.require ? require("electron").ipcRenderer : {};
+    if (!window.require) {
+      document.documentElement.toggleAttribute('server', true);
+    }
   </script>
   %sveltekit.head%
 </head>
