@@ -12,9 +12,12 @@
       socket.send("Controller connected");
     });
 
+    let messages = ''
     // Listen for messages
     socket.addEventListener("message", (event) => {
       console.log("Message from server:", event.data);
+      messages += event.data + '\n';
+      document.getElementById('messages').textContent = messages;
     });
 
     document.addEventListener(
@@ -50,3 +53,5 @@
   <button type="button" value="right">right</button>
   <button type="button" value="down">\/</button>
 </form>
+
+<pre id="messages"></pre>

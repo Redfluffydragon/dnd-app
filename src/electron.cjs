@@ -71,7 +71,11 @@ function createMainWindow() {
     .ws('/control', (ws, req) => {
       ws.on('message', msg => {
         console.log('controller:', msg);
+        // Send to main window
         mainwindow.webContents.send('control', msg);
+
+        // Send ACK
+        ws.send('received ' + msg);
       });
     })
     .listen(8000, () => {
