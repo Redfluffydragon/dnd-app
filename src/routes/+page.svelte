@@ -1,18 +1,19 @@
 <script>
-  import { onMount } from "svelte";
-  import QRrious from "qrious";
+  import { onMount } from 'svelte';
+  import QRrious from 'qrious';
 
   let ip;
 
   onMount(() => {
+    if (!window.require) return;
     // notify main that the page is loaded
     ipc.send('ip', 'ready');
 
     // display qr code
-    ipc.on("ip", (e, msg) => {
+    ipc.on('ip', (e, msg) => {
       ip = msg;
       new QRrious({
-        element: document.getElementById("controllerQR"),
+        element: document.getElementById('controllerQR'),
         value: `http://${msg}:8000/control`,
       });
     });
@@ -26,13 +27,26 @@
 <main>
   <h1>D&D App</h1>
   <div class="column">
-    <p>To start a new session, go to <a href="/play">Play</a></p>
-    <p>To add a controller, go to <a href="/control">{ip ? `${ip}:8000/control` : 'control'}</a> <br> or scan the QR code below</p>
+    <p class="app-only">
+      To start a new session, go to <a href="/play">Play</a>
+    </p>
+    <p>
+      To add a controller, go to <a href="/control"
+        >{ip ? `${ip}:8000/control` : 'control'}</a
+      >
+      {#if ip}
+        <br /> or scan the QR code below
+      {/if}
+    </p>
     <canvas id="controllerQR" />
   </div>
 </main>
 
 <style lang="scss">
+  :global(html[server] .app-only) {
+    display: none;
+  }
+
   main {
     text-align: center;
     padding: 1em;
