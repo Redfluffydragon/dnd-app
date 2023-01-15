@@ -2,12 +2,15 @@
   import { onMount } from "svelte";
   import QRrious from "qrious";
 
+  let ip;
+
   onMount(() => {
     // notify main that the page is loaded
     ipc.send('ip', 'ready');
 
     // display qr code
     ipc.on("ip", (e, msg) => {
+      ip = msg;
       new QRrious({
         element: document.getElementById("controllerQR"),
         value: `http://${msg}:8000/control`,
@@ -22,9 +25,11 @@
 
 <main>
   <h1>D&D App</h1>
-  <p>To start a new session, go to <a href="/play">Play</a></p>
-  <p>To add a controller, go to <a href="/control">Control</a></p>
-  <canvas id="controllerQR" />
+  <div class="column">
+    <p>To start a new session, go to <a href="/play">Play</a></p>
+    <p>To add a controller, go to <a href="/control">{ip ? `${ip}:8000/control` : 'control'}</a> <br> or scan the QR code below</p>
+    <canvas id="controllerQR" />
+  </div>
 </main>
 
 <style lang="scss">
@@ -39,27 +44,19 @@
     font-size: 4rem;
     font-weight: 100;
     line-height: 1.1;
-    margin: 4rem auto;
-    max-width: 14rem;
   }
 
-  p {
-    max-width: 14rem;
-    margin: 2rem auto;
-    line-height: 1.35;
+  .column {
+    display: grid;
+    grid-template-columns: 1fr calc(100% - 44px) 1fr;
+    place-items: center;
+  }
+
+  .column > * {
+    grid-column: 2;
   }
 
   #controllerQR {
     height: 6em;
-  }
-
-  @media (min-width: 480px) {
-    h1 {
-      max-width: none;
-    }
-
-    p {
-      max-width: none;
-    }
   }
 </style>
