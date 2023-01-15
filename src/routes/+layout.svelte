@@ -1,8 +1,13 @@
 <script>
-  import "../app.scss";
+  import '../app.scss';
 </script>
 
-
-<div class="main">
+<main>
   <slot />
-</div>
+</main>
+
+<style>
+  main {
+    padding: 10px;
+  }
+</style>
