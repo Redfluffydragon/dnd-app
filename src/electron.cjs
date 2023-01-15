@@ -70,7 +70,7 @@ function createMainWindow() {
     .ws('/control', (ws, req) => {
       ws.on('message', msg => {
         console.log('controller:', msg);
-        mainSocket?.send('controller input: ' + msg);
+        mainwindow.webContents.send('control', msg);
       });
     })
     .listen(8000, () => {

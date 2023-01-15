@@ -12,6 +12,8 @@
       socket.send("Hello Server!");
     });
 
+    let left = 0;
+
     // Listen for messages
     socket.addEventListener("message", (event) => {
       console.log("Message from server:", event.data);
@@ -26,7 +28,18 @@
       }
     });
 
-    let left = 0;
+    ipc.on('control', (e, msg) => {
+      console.log(msg);
+      const lr = msg.match(/(left|right)/)?.[0];
+      if (lr) {
+        if (lr === "left") {
+          left -= 10;
+        } else {
+          left += 10;
+        }
+        document.getElementById("testToken").style.left = left + "px";
+      }
+    })
   });
 </script>
 
