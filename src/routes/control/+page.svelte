@@ -91,6 +91,7 @@
     <p class="error">{error}</p>
   </form>
 {:else}
+  <h1>Player {id}</h1>
   <form id="controlForm">
     <button type="button" value="up">/\</button>
     <div>
