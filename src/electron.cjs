@@ -78,16 +78,8 @@ function createMainWindow() {
     .use(express.static(path.join(__dirname, `..${staticDir}`)))
     .get(/^\/([^\.]+)$/, (req, res) => {
       console.log(req.params);
-      if (!req.params[0].includes('.')) {
-        res.sendFile(path.join(__dirname, `..${staticDir}/${req.params[0] || 'index'}.html`));
-      }
-    })
-    .ws('/play', (ws, req) => {
-      mainSocket = ws;
-      ws.on('message', msg => {
-        console.log(msg);
-        ws.send('received: ' + msg)
-      });
+      const slug = req.params[0] === 'play' ? 'out-of-app-error' : req.params[0];
+      res.sendFile(path.join(__dirname, `..${staticDir}/${slug || 'index'}.html`));
     })
     .ws('/control', (ws, req) => {
       ws.on('message', msg => {
