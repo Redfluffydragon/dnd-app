@@ -1,18 +1,23 @@
+// Electron imports
 const { app, ipcMain, BrowserWindow } = require("electron");
 const serve = require("electron-serve");
 const ws = require("electron-window-state");
 try { require("electron-reloader")(module); } catch { }
 
+// App-specific imports
 const os = require('os');
 const path = require("path");
 const express = require('express');
 const exApp = express();
 const expressWs = require('express-ws')(exApp);
+const Store = require('electron-store');
 
 const loadURL = serve({ directory: "." });
 const port = process.env.PORT || 3000;
 const isdev = !app.isPackaged || (process.env.NODE_ENV == "development");
 let mainwindow;
+
+const serverPort = 8000;
 
 function loadVite(port) {
   mainwindow.loadURL(`http://localhost:${port}`).catch(() => {
@@ -90,16 +95,51 @@ function createMainWindow() {
         // Send to main window
         mainwindow.webContents.send('control', msg);
 
-        // Send ACK
-        ws.send('received ' + msg);
+        // parse for use here
+        const unstrung = JSON.parse(msg);
+        if (unstrung.controllerID) {
+          if (unstrung.newPlayer) {
+            if (!players[unstrung.controllerID]) {
+              players[unstrung.controllerID] = {};
+            }
+            else {
+              ws.send(response(409, {
+                msg: 'Player names must be unique',
+              }))
+              return;
+            }
+          }
+          sockets[unstrung.controllerID] = ws;
+          ws.send(response(200, {
+            type: 'playeradded',
+            id: unstrung.controllerID,
+          }));
+          store.set('players', players);
+        }
       });
     })
-    .listen(8000, () => {
-      console.log(`D&D app listening on port ${8000}`)
+    .listen(serverPort, () => {
+      console.log(`D&D app listening on port ${serverPort}`)
     })
 }
+
+// App-specific logic
+
+function response(status, body) {
+  return JSON.stringify({
+    ...body,
+    status,
+    ok: status === 200,
+  })
+}
+
+const store = new Store();
+
+const players = store.get('players') || {};
+
+// store sockets separately because they don't need to be persistently stored
+const sockets = {};
 
 app.once("ready", createMainWindow);
 app.on("activate", () => { if (!mainwindow) createMainWindow(); });
 app.on("window-all-closed", () => { if (process.platform !== "darwin") app.quit(); });
-
