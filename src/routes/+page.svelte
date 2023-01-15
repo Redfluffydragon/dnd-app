@@ -15,6 +15,7 @@
       new QRrious({
         element: document.getElementById('controllerQR'),
         value: `http://${msg}:8000/control`,
+        size: window.innerWidth * 0.33,
       });
     });
   });
@@ -68,9 +69,5 @@
 
   .column > * {
     grid-column: 2;
-  }
-
-  #controllerQR {
-    height: 6em;
   }
 </style>
