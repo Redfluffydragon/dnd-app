@@ -3,7 +3,7 @@ const serve = require("electron-serve");
 const ws = require("electron-window-state");
 try { require("electron-reloader")(module); } catch { }
 
-const http = require("http");
+const os = require('os');
 const path = require("path");
 const express = require('express');
 const exApp = express();
@@ -50,7 +50,22 @@ function createMainWindow() {
 
   ipcMain.on('main', (_, msg) => {
     console.log(msg);
-  })
+  });
+
+  const interfaces = os.networkInterfaces();
+  const addresses = [];
+  for (const k in interfaces) {
+    for (const k2 in interfaces[k]) {
+      const address = interfaces[k][k2];
+      if (address.family === 'IPv4' && !address.internal) {
+        addresses.push(address.address);
+      }
+    }
+  }
+
+  ipcMain.on('ip', () => {
+    mainwindow.webContents.send('ip', addresses[0]);
+  });
 
   // Express server for controls
   exApp

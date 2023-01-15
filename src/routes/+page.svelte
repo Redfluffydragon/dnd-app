@@ -1,5 +1,19 @@
 <script>
-  import Counter from "$lib/Counter.svelte";
+  import { onMount } from "svelte";
+  import QRrious from "qrious";
+
+  onMount(() => {
+    // notify main that the page is loaded
+    ipc.send('ip', 'ready');
+
+    // display qr code
+    ipc.on("ip", (e, msg) => {
+      new QRrious({
+        element: document.getElementById("controllerQR"),
+        value: `http://${msg}:8000/control`,
+      });
+    });
+  });
 </script>
 
 <svelte:head>
@@ -10,6 +24,7 @@
   <h1>D&D App</h1>
   <p>To start a new session, go to <a href="/play">Play</a></p>
   <p>To add a controller, go to <a href="/control">Control</a></p>
+  <canvas id="controllerQR" />
 </main>
 
 <style lang="scss">
@@ -32,6 +47,10 @@
     max-width: 14rem;
     margin: 2rem auto;
     line-height: 1.35;
+  }
+
+  #controllerQR {
+    height: 6em;
   }
 
   @media (min-width: 480px) {
