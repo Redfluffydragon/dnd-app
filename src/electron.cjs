@@ -49,6 +49,8 @@ function createMainWindow() {
   if (isdev) loadVite(port);
   else loadURL(mainwindow);
 
+  let mainSocket;
+
   // Express server
   exApp
     .use(express.static(path.join(__dirname, '../build')))
