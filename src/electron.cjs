@@ -68,12 +68,13 @@ function createMainWindow() {
   });
 
   // Express server for controls
+  const staticDir = isdev ? '/build' : '';
   exApp
-    .use(express.static(path.join(__dirname, '../build')))
+    .use(express.static(path.join(__dirname, `..${staticDir}`)))
     .get(/^\/([^\.]+)$/, (req, res) => {
       console.log(req.params);
       if (!req.params[0].includes('.')) {
-        res.sendFile(path.join(__dirname, `../build/${req.params[0] || 'index'}.html`));
+        res.sendFile(path.join(__dirname, `..${staticDir}/${req.params[0] || 'index'}.html`));
       }
     })
     .ws('/play', (ws, req) => {
