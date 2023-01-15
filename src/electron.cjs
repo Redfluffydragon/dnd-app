@@ -21,7 +21,6 @@ function loadVite(port) {
 }
 
 function createMainWindow() {
-  console.log(__dirname);
   let mws = ws({
     defaultWidth: 1000,
     defaultHeight: 800,
@@ -36,7 +35,7 @@ function createMainWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      devTools: isdev || true
+      devTools: isdev || true,
     }
   });
 
@@ -49,9 +48,11 @@ function createMainWindow() {
   if (isdev) loadVite(port);
   else loadURL(mainwindow);
 
-  let mainSocket;
+  ipcMain.on('main', (_, msg) => {
+    console.log(msg);
+  })
 
-  // Express server
+  // Express server for controls
   exApp
     .use(express.static(path.join(__dirname, '../build')))
     .get(/^\/([^\.]+)$/, (req, res) => {

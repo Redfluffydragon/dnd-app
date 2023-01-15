@@ -40,11 +40,17 @@
         document.getElementById("testToken").style.left = left + "px";
       }
     })
+
+    document.getElementById('test-msg').addEventListener('click', () => {
+      ipc.send('main', 'Test message');
+    })
   });
 </script>
 
 <h1>Play</h1>
 <div id="testToken" />
+<br><br>
+<button id="test-msg">Send test message</button>
 
 <style>
   #testToken {
