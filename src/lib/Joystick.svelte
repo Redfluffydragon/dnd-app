@@ -31,14 +31,26 @@
   function handleMove(e) {
     e.preventDefault();
     position = calcPosition({
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientY,
+      x: e.touches?.[0].clientX || e.x,
+      y: e.touches?.[0].clientY || e.y,
     });
+  }
+
+  function setup() {
+    // Get center every time in case of scrolling?
+    const box = container.getBoundingClientRect();
+    center = {
+      x: box.x + box.width / 2,
+      y: box.y + box.height / 2,
+    };
+    limit = box.width / 2;
+    sendSignal();
   }
 
   function reset() {
     position = { x: 0, y: 0 };
     document.removeEventListener('touchmove', handleMove, { passive: false });
+    document.removeEventListener('mousemove', handleMove, { passive: false });
     cancelAnimationFrame(send);
   }
 
@@ -56,18 +68,17 @@
   bind:this={container}
   on:touchstart={(e) => {
     e.preventDefault();
-    // Get center every time in case of scrolling?
-    const box = container.getBoundingClientRect();
-    center = {
-      x: box.x + box.width / 2,
-      y: box.y + box.height / 2,
-    };
-    limit = box.width / 2;
+    setup();
 
     document.addEventListener('touchmove', handleMove, { passive: false });
     document.addEventListener('touchend', reset, { once: true });
     document.addEventListener('touchcancel', reset, { once: true });
-    sendSignal();
+  }}
+  on:mousedown={() => {
+    setup();
+
+    document.addEventListener('mousemove', handleMove, { passive: false });
+    document.addEventListener('mouseup', reset, { once: true });
   }}
 >
   <div
