@@ -19,11 +19,7 @@
     // Connection opened
     socket.addEventListener('open', (event) => {
       waitingMsg = 'Connected, waiting for session to start';
-      socket.send(
-        JSON.stringify({
-          type: 'controllerconnected',
-        })
-      );
+      socket.send(message('controllerconnected'));
     });
 
     let messages = '';
@@ -39,12 +35,7 @@
           waitingMsg = null;
 
           if (id) {
-            socket.send(
-              JSON.stringify({
-                controllerID: id,
-                newPlayer: false,
-              })
-            );
+            socket.send(message('connectplayer', { newPlayer: false }));
           }
         } else if (e.type === 'playeradded') {
           id = e.id;
@@ -62,10 +53,12 @@
       'click',
       (e) => {
         if (e.target.matches('button') && e.target.closest('#controlForm')) {
-          console.log(e.target.value);
           socket.send(
-            JSON.stringify({
-              button: e.target.value,
+            message('control', {
+              direction: {
+                x: e.target.value.match(/(left|right)/) ? 10 * (e.target.value.match('left') ? -1 : 1) : 0,
+                y: e.target.value.match(/(up|down)/) ? 10 * (e.target.value.match('up') ? -1 : 1) : 0,
+              },
             })
           );
         }
@@ -73,6 +66,14 @@
       false
     );
   });
+
+  function message(type, body = {}, msgID = id) {
+    return JSON.stringify({
+      ...body,
+      type,
+      id: msgID,
+    });
+  }
 </script>
 
 {#if waitingMsg}
@@ -89,10 +90,7 @@
       e.preventDefault();
 
       socket.send(
-        JSON.stringify({
-          controllerID: newID,
-          newPlayer: data.get('new'),
-        })
+        message('connectplayer', { newPlayer: data.get('new') }, newID)
       );
     }}
   >

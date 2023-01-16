@@ -126,12 +126,9 @@ function createMainWindow() {
     })
     .ws('/control', (ws, req) => {
       ws.on('message', msg => {
+        msg = JSON.parse(msg);
         console.log('controller:', msg);
-        // Send to main window
-        mainwindow.webContents.send('control', msg);
 
-        // parse for use here
-        const unstrung = JSON.parse(msg);
         if (!session) {
           tempSockets.push(ws);
           ws.send(response(503, {
@@ -139,24 +136,24 @@ function createMainWindow() {
           }));
           return;
         }
-        else if (unstrung.type === 'controllerconnected') {
+        else if (msg.type === 'controllerconnected') {
           ws.send(response(200, {
             type: 'sessionstart',
           }));
         }
 
-        if (unstrung.controllerID) {
-          if (unstrung.newPlayer && session.players[unstrung.controllerID]) {
+        if (msg.type === 'connectplayer' && msg.id) {
+          if (msg.newPlayer && session.players[msg.id]) {
             ws.send(response(409, {
               msg: 'Player names must be unique',
             }));
             return;
           }
-          if (!session.players[unstrung.controllerID]) {
-            session.players[unstrung.controllerID] = {};
+          if (!session.players[msg.id]) {
+            session.players[msg.id] = {};
           }
           // link socket to player id
-          sockets[unstrung.controllerID] = ws;
+          sockets[msg.id] = ws;
 
           mainwindow.webContents.send('players', JSON.stringify({
             type: 'allplayers',
@@ -165,9 +162,12 @@ function createMainWindow() {
 
           ws.send(response(200, {
             type: 'playeradded',
-            id: unstrung.controllerID,
+            id: msg.id,
           }));
           store.set(`sessions.${session.name}.players`, session.players);
+        }
+        else if (msg.type === 'control') {
+          mainwindow.webContents.send('control', response(200, msg));
         }
       });
     })

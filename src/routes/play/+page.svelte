@@ -34,6 +34,21 @@
         session.players = msg.players;
       }
     });
+
+    ipc.on('control', (e, msg) => {
+      msg = JSON.parse(msg);
+      console.log(msg);
+      if (msg.direction) {
+        if (!session.players[msg.id].position) {
+          session.players[msg.id].position = {
+            x: 0,
+            y: 0,
+          };
+        }
+        session.players[msg.id].position.x += msg.direction.x;
+        session.players[msg.id].position.y += msg.direction.y;
+      }
+    });
   });
 
   function newSession(name) {
@@ -97,7 +112,19 @@
   <h1>Session: {session.name}</h1>
   {#if console.log(session.players) || session.players}
     {#each Object.entries(session.players) as player}
-      <p>{player[0]}</p>
+      <p
+        class="token"
+        style="left: {session.players[player[0]].position?.x}px; top: {session
+          .players[player[0]].position?.y}px;"
+      >
+        {player[0]}
+      </p>
     {/each}
   {/if}
 {/if}
+
+<style>
+  .token {
+    position: absolute;
+  }
+</style>
