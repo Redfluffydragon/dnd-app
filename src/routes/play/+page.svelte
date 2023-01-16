@@ -117,27 +117,36 @@
   {#if console.log(session.players) || session.players}
     {#each Object.entries(session.players) as player}
       <div
-        class="token"
+        class="player"
         style="transform: translate({session.players[player[0]].position
           ?.x}px, {session.players[player[0]].position?.y}px);"
       >
-        {player[0]}
+        <div class="tag">{player[0].slice(0, 16)}{player[0].length > 15 ? '...' : ''}</div>
+        <div class="token" />
       </div>
     {/each}
   {/if}
 {/if}
 
 <style>
-  .token {
+  .player {
     position: absolute;
-    background: var(--primary);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    color: white;
-    padding: 2ch;
-    transition: transform 20ms;
     display: flex;
+    flex-direction: column;
     place-items: center;
     will-change: transform;
+
+  }
+
+  .tag {
+    text-align: center;
+  }
+
+  .token {
+    background: var(--primary);
+    width: 4em;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    transition: transform 20ms;
   }
 </style>
