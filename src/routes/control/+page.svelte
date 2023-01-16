@@ -50,6 +50,10 @@
       }
     });
 
+    socket.addEventListener('close', (event) => {
+      waitingMsg = 'Connection lost. Try reloading.';
+    });
+
     // Controller clicks
     document.addEventListener(
       'click',
