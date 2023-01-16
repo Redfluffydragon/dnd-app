@@ -54,10 +54,7 @@ function createMainWindow() {
   if (isdev) loadVite(port);
   else loadURL(mainwindow);
 
-  ipcMain.on('main', (_, msg) => {
-    console.log(msg);
-  });
-
+  // get host computer local IP address to share
   const interfaces = os.networkInterfaces();
   const addresses = [];
   for (const k in interfaces) {
