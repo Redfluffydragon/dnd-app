@@ -88,6 +88,15 @@
 
 {#if waitingMsg}
   <h1>{waitingMsg}</h1>
+  {#if waitingMsg.includes('reload')}
+    <Column>
+      <button
+        on:click={() => {
+          location.reload();
+        }}>Reload</button
+      >
+    </Column>
+  {/if}
 {:else if !id}
   <h1>Add a new controller</h1>
   <form
