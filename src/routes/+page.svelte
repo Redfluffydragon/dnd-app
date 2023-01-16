@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import QRrious from 'qrious';
+  import Column from '$lib/Column.svelte';
 
   let ip;
 
@@ -27,9 +28,9 @@
 
 <main>
   <h1>D&D App</h1>
-  <div class="column">
+  <Column>
     <p class="app-only">
-      To start a new session, go to <a href="/play">Play</a>
+      To load a session or start a new session, go to <a href="/play">Play</a>
     </p>
     <p>
       To add a controller, go to <a href="/control"
@@ -40,7 +41,7 @@
       {/if}
     </p>
     <canvas id="controllerQR" />
-  </div>
+  </Column>
 </main>
 
 <style lang="scss">
@@ -59,15 +60,5 @@
     font-size: 4rem;
     font-weight: 100;
     line-height: 1.1;
-  }
-
-  .column {
-    display: grid;
-    grid-template-columns: 1fr calc(100% - 44px) 1fr;
-    place-items: center;
-  }
-
-  .column > * {
-    grid-column: 2;
   }
 </style>

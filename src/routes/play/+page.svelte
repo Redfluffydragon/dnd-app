@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import Column from '../../lib/Column.svelte';
+  import Column from '$lib/Column.svelte';
 
   /** @type {import('./$types').PageData} */
   // export let data;
