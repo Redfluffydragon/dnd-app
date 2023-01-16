@@ -7,7 +7,7 @@
     x: 0,
     y: 0,
   };
-  let limit;
+  let radius;
   let send;
 
   const dispatch = createEventDispatcher();
@@ -20,10 +20,10 @@
     const angle = Math.atan2(diff.y, diff.x);
     return {
       x:
-        Math.min(Math.abs(diff.x), Math.abs(Math.cos(angle) * limit)) *
+        Math.min(Math.abs(diff.x), Math.abs(Math.cos(angle) * radius)) *
         Math.sign(diff.x),
       y:
-        Math.min(Math.abs(diff.y), Math.abs(Math.sin(angle) * limit)) *
+        Math.min(Math.abs(diff.y), Math.abs(Math.sin(angle) * radius)) *
         Math.sign(diff.y),
     };
   }
@@ -43,7 +43,7 @@
       x: box.x + box.width / 2,
       y: box.y + box.height / 2,
     };
-    limit = box.width / 2;
+    radius = box.width / 2;
     sendSignal();
   }
 
@@ -56,8 +56,8 @@
 
   function sendSignal() {
     dispatch('input', {
-      x: position.x / limit,
-      y: position.y / limit,
+      x: position.x / radius,
+      y: position.y / radius,
     });
     send = requestAnimationFrame(sendSignal);
   }
