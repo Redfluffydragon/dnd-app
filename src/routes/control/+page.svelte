@@ -1,6 +1,8 @@
 <script>
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
+  import Joystick from '../../lib/Joystick.svelte';
+  import Column from '../../lib/Column.svelte';
 
   /** @type {import('./$types').PageData} */
   // export let data;
@@ -105,15 +107,21 @@
     <p class="error">{error}</p>
   </form>
 {:else}
-  <h1>Player {id}</h1>
-  <form id="controlForm">
-    <button type="button" value="up">/\</button>
-    <div>
-      <button type="button" value="left">left</button>
-      <button type="button" value="right">right</button>
-    </div>
-    <button type="button" value="down">\/</button>
-  </form>
+  <h1>Player: {id}</h1>
+  <Column>
+    <Joystick
+      on:input={(e) => {
+        socket.send(
+          message('control', {
+            direction: {
+              x: e.detail.x * 10,
+              y: e.detail.y * 10,
+            },
+          })
+        );
+      }}
+    />
+  </Column>
 {/if}
 
 <pre id="messages" />
