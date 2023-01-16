@@ -112,13 +112,13 @@
   <h1>Session: {session.name}</h1>
   {#if console.log(session.players) || session.players}
     {#each Object.entries(session.players) as player}
-      <p
+      <div
         class="token"
-        style="left: {session.players[player[0]].position?.x}px; top: {session
-          .players[player[0]].position?.y}px;"
+        style="transform: translate({session.players[player[0]].position
+          ?.x}px, {session.players[player[0]].position?.y}px);"
       >
         {player[0]}
-      </p>
+      </div>
     {/each}
   {/if}
 {/if}
@@ -126,5 +126,14 @@
 <style>
   .token {
     position: absolute;
+    background: var(--primary);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    color: white;
+    padding: 2ch;
+    transition: transform 20ms;
+    display: flex;
+    place-items: center;
+    will-change: transform;
   }
 </style>
