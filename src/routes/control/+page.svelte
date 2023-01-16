@@ -62,8 +62,12 @@
           socket.send(
             message('control', {
               direction: {
-                x: e.target.value.match(/(left|right)/) ? 10 * (e.target.value.match('left') ? -1 : 1) : 0,
-                y: e.target.value.match(/(up|down)/) ? 10 * (e.target.value.match('up') ? -1 : 1) : 0,
+                x: e.target.value.match(/(left|right)/)
+                  ? 10 * (e.target.value.match('left') ? -1 : 1)
+                  : 0,
+                y: e.target.value.match(/(up|down)/)
+                  ? 10 * (e.target.value.match('up') ? -1 : 1)
+                  : 0,
               },
             })
           );
