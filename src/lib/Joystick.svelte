@@ -92,6 +92,7 @@
   .stick {
     aspect-ratio: 1;
     border-radius: 50%;
+    border: 3px solid black;
   }
 
   .joystick {
