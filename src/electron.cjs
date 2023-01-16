@@ -36,6 +36,7 @@ function createMainWindow() {
     y: mws.y,
     width: mws.width,
     height: mws.height,
+    title: 'D&D Main Screen',
 
     webPreferences: {
       nodeIntegration: true,

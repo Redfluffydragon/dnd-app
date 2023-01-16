@@ -72,6 +72,10 @@
   }
 </script>
 
+<svelte:head>
+  <title>Play D&amp;D{session ? ` - Session: ${session.name}` : ''}</title>
+</svelte:head>
+
 {#if !session}
   <h1>Select or create a session</h1>
   <Column>
