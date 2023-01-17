@@ -83,6 +83,7 @@
             </div>
           {/if}
         </li>
+        <li><button>Switch session</button></li>
         <li><button>Remove players</button></li>
       </menu>
     {/if}
