@@ -1,7 +1,7 @@
 // Electron imports
 const { app, ipcMain, BrowserWindow } = require("electron");
 const serve = require("electron-serve");
-const ws = require("electron-window-state");
+const wsk = require("electron-window-state");
 try { require("electron-reloader")(module); } catch { }
 
 // App-specific imports
@@ -26,7 +26,7 @@ function loadVite(port) {
 }
 
 function createMainWindow() {
-  let mws = ws({
+  let mws = wsk({
     defaultWidth: 1000,
     defaultHeight: 800,
   });
