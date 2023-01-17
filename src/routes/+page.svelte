@@ -23,7 +23,7 @@
       To load a session or start a new session, go to <a href="/play">Play</a>
     </p>
     <p>
-      To add a controller, go to <a href="/control"
+      To add a player/controller, go to <a href="/control"
         >{$ip ? `${$ip}:8000/control` : 'control'}</a
       >
       {#if $ip}
