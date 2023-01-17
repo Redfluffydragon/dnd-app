@@ -27,7 +27,11 @@
 </script>
 
 <header>
-  <div class="links"><a href="/">Home</a></div>
+  <div class="links">
+    {#if !$page.route.id.includes('control')}
+      <a href="/">Home</a>
+    {/if}
+  </div>
   {#if $page.route.id.includes('play')}
     <button
       class="menuButton imgButton"
