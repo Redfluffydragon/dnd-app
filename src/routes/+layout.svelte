@@ -132,7 +132,7 @@
   }
 
   menu li button:hover {
-    filter: brightness(0.8);
+    background: rgba(0, 0, 0, 0.173);
   }
 
   menu li button {
