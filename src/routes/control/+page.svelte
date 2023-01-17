@@ -14,7 +14,6 @@
 
   onMount(() => {
     id = localStorage.getItem('dnd-id') || '';
-    console.log(id);
 
     socket = new WebSocket(`ws://${location.host}/control`);
 
