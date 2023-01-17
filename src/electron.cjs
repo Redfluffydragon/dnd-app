@@ -118,7 +118,6 @@ function createMainWindow() {
   exApp
     .use(express.static(path.join(__dirname, `..${staticDir}`)))
     .get(/^\/([^\.]+)$/, (req, res) => {
-      console.log(req.params);
       const slug = req.params[0] === 'play' ? 'out-of-app-error' : req.params[0];
       res.sendFile(path.join(__dirname, `..${staticDir}/${slug || 'index'}.html`));
     })

@@ -117,7 +117,7 @@
   </Column>
 {:else}
   <h1>Session: {session.name}</h1>
-  {#if console.log(session.players) || session.players}
+  {#if session.players}
     {#each Object.entries(session.players) as player}
       <div
         class="player"
