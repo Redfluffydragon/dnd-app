@@ -1,25 +1,15 @@
 <script>
-  import { onMount } from 'svelte';
   import QRrious from 'qrious';
   import Column from '$lib/Column.svelte';
+  import { ip } from '$lib/stores';
+  import { browser } from '$app/environment';
 
-  let ip;
-
-  onMount(() => {
-    if (!window.require) return;
-    // notify main that the page is loaded
-    ipc.send('ip', 'ready');
-
-    // display qr code
-    ipc.on('ip', (e, msg) => {
-      ip = msg;
-      new QRrious({
-        element: document.getElementById('controllerQR'),
-        value: `http://${msg}:8000/control`,
-        size: window.innerWidth * 0.33,
-      });
+  $: browser &&
+    new QRrious({
+      element: document.getElementById('controllerQR'),
+      value: `http://${$ip}:8000/control`,
+      size: Math.min(window.innerWidth, window.innerHeight) * 0.33,
     });
-  });
 </script>
 
 <svelte:head>
@@ -34,9 +24,9 @@
     </p>
     <p>
       To add a controller, go to <a href="/control"
-        >{ip ? `${ip}:8000/control` : 'control'}</a
+        >{$ip ? `${$ip}:8000/control` : 'control'}</a
       >
-      {#if ip}
+      {#if $ip}
         <br /> or scan the QR code below
       {/if}
     </p>
