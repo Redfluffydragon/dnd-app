@@ -38,13 +38,12 @@
       on:click={() => {
         showMenu = !showMenu;
       }}
-      ><svg
-        width="64"
-        height="64"
-        viewBox="0 0 64 64"
-        fill="none"
-      >
-        <path d="M7 32H57M7 50H57M7 14H57" stroke="currentColor" stroke-width="5" />
+      ><svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+        <path
+          d="M7 32H57M7 50H57M7 14H57"
+          stroke="currentColor"
+          stroke-width="5"
+        />
       </svg>
     </button>
     {#if showMenu}
@@ -77,7 +76,7 @@
   header {
     display: flex;
   }
-  
+
   .links {
     padding: 1ch 2ch;
   }
