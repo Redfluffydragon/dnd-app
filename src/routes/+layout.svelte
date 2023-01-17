@@ -1,11 +1,13 @@
 <script>
   import '../app.scss';
   import { page } from '$app/stores';
-  import { fly } from 'svelte/transition';
-  import { onMount } from 'svelte';
+  import { fly, slide } from 'svelte/transition';
+  import { onMount, tick } from 'svelte';
   import { ip } from '$lib/stores';
+  import qrious from 'qrious';
 
   let showMenu = false;
+  let showQR = false;
 
   onMount(() => {
     document.addEventListener('click', (e) => {
@@ -61,7 +63,26 @@
             />
           </svg>
         </button>
-        <li><button>Show QR code</button></li>
+        <li>
+          <button
+            on:click={async () => {
+              showQR = !showQR;
+              await tick();
+              if (showQR) {
+                new qrious({
+                  element: document.getElementById('qr'),
+                  value: `http://${$ip}:8000/control`,
+                  size: window.innerWidth * 0.2,
+                });
+              }
+            }}>Show QR code</button
+          >
+          {#if showQR}
+            <div transition:slide>
+              <canvas id="qr" />
+            </div>
+          {/if}
+        </li>
         <li><button>Remove players</button></li>
       </menu>
     {/if}
@@ -109,7 +130,7 @@
     align-self: flex-end;
   }
 
-  menu li:hover {
+  menu li button:hover {
     filter: brightness(0.8);
   }
 
