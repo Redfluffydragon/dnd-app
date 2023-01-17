@@ -3,6 +3,7 @@
   import { page } from '$app/stores';
   import { fly } from 'svelte/transition';
   import { onMount } from 'svelte';
+  import { ip } from '$lib/stores';
 
   let showMenu = false;
 
@@ -11,6 +12,16 @@
       if (!e.target.closest('menu,.menuButton')) {
         showMenu = false;
       }
+    });
+
+    // don't try to use IPC if the page is through the server
+    if (!window.require) return;
+    // notify main that the page is loaded
+    ipc.send('ip', 'ready');
+
+    // display qr code
+    ipc.on('ip', (e, msg) => {
+      $ip = msg;
     });
   });
 </script>
