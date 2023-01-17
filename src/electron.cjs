@@ -148,14 +148,16 @@ function createMainWindow() {
             return;
           }
           if (!session.players[msg.id]) {
-            session.players[msg.id] = {};
+            session.players[msg.id] = {
+              id: msg.id,
+            };
           }
           // link socket to player id
           sockets[msg.id] = ws;
 
           mainwindow.webContents.send('players', JSON.stringify({
-            type: 'allplayers',
-            players: session.players
+            type: 'addplayer',
+            player: session.players[msg.id],
           }));
 
           ws.send(response(200, {

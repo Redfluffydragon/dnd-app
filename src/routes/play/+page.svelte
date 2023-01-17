@@ -33,6 +33,9 @@
       if (msg.type === 'allplayers') {
         session.players = msg.players;
       }
+      else if (msg.type === 'addplayer' && !session.players[msg.player.id]) {
+        session.players[msg.player.id] = msg.player;
+      }
     });
 
     ipc.on('control', (e, msg) => {
