@@ -49,6 +49,15 @@ button {
   cursor: pointer;
 }
 
+.imgButton {
+  padding: 2ch;
+}
+
+button svg {
+  width: 1em;
+  height: 1em;
+}
+
 p,
 h1,
 h2,

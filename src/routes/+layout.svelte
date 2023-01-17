@@ -1,9 +1,57 @@
 <script>
   import '../app.scss';
+  import { page } from '$app/stores';
+  import { fly } from 'svelte/transition';
+  import { onMount } from 'svelte';
+
+  let showMenu = false;
+
+  onMount(() => {
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('menu,.menuButton')) {
+        showMenu = false;
+      }
+    });
+  });
 </script>
 
 <header>
-  <a href="/">Home</a>
+  <div class="links"><a href="/">Home</a></div>
+  {#if $page.route.id.includes('play')}
+    <button
+      class="menuButton imgButton"
+      on:click={() => {
+        showMenu = !showMenu;
+      }}
+      ><svg
+        width="64"
+        height="64"
+        viewBox="0 0 64 64"
+        fill="none"
+      >
+        <path d="M7 32H57M7 50H57M7 14H57" stroke="currentColor" stroke-width="5" />
+      </svg>
+    </button>
+    {#if showMenu}
+      <menu transition:fly={{ x: 200 }}>
+        <button
+          class="closeButton imgButton"
+          on:click={() => {
+            showMenu = false;
+          }}
+          ><svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+            <path
+              d="M50 2L2 50M2 2L50 50"
+              stroke="currentColor"
+              stroke-width="5"
+            />
+          </svg>
+        </button>
+        <li><button>Show QR code</button></li>
+        <li><button>Remove players</button></li>
+      </menu>
+    {/if}
+  {/if}
 </header>
 
 <main>
@@ -12,10 +60,47 @@
 
 <style>
   header {
-    padding: 1ch;
+    display: flex;
+  }
+  
+  .links {
+    padding: 1ch 2ch;
   }
 
   main {
     padding: 10px;
+  }
+
+  .menuButton {
+    position: fixed;
+    right: 0;
+  }
+
+  menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    background: var(--primary);
+    position: fixed;
+    right: 0;
+    top: 0;
+    box-shadow: -5px 5px 15px rgba(0, 0, 0, 0.334);
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    min-width: 20%;
+  }
+
+  .closeButton {
+    align-self: flex-end;
+  }
+
+  menu li:hover {
+    filter: brightness(0.8);
+  }
+
+  menu li button {
+    width: 100%;
+    text-align: left;
   }
 </style>
