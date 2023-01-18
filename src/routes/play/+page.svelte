@@ -32,9 +32,12 @@
       msg = JSON.parse(msg);
       if (msg.type === 'allplayers') {
         session.players = msg.players;
-      }
-      else if (msg.type === 'addplayer' && !session.players[msg.player.id]) {
+      } else if (msg.type === 'addplayer' && !session.players[msg.player.id]) {
         session.players[msg.player.id] = msg.player;
+      } else if (msg.type === 'playeronline') {
+        session.players[msg.id].online = true;
+      } else if (msg.type === 'playeroffline') {
+        session.players[msg.id].online = false;
       }
     });
 

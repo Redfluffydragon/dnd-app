@@ -150,14 +150,20 @@ function createMainWindow() {
             session.players[msg.id] = {
               id: msg.id,
             };
+            mainwindow.webContents.send('players', JSON.stringify({
+              type: 'addplayer',
+              player: session.players[msg.id],
+            }));
+          }
+          else {
+            session.players[msg.id].online = true;
+            mainwindow.webContents.send('players', JSON.stringify({
+              type: 'playeronline',
+              id: msg.id,
+            }));
           }
           // link socket to player id
           sockets[msg.id] = ws;
-
-          mainwindow.webContents.send('players', JSON.stringify({
-            type: 'addplayer',
-            player: session.players[msg.id],
-          }));
 
           ws.send(response(200, {
             type: 'playeradded',
@@ -168,6 +174,13 @@ function createMainWindow() {
         else if (msg.type === 'control') {
           mainwindow.webContents.send('control', response(200, msg));
         }
+      });
+
+      ws.on('close', () => {
+        controllerDisconnect(ws);
+      });
+      ws.on('error', () => {
+        controllerDisconnect(ws);
       });
     })
     .listen(serverPort, () => {
@@ -198,6 +211,14 @@ function notifyControllers(msg) {
 }
 
 function selectSession(session) {
+  if (session.players) {
+    for (const id in session.players) {
+      if (!sockets[id]) {
+        session.players[id].online = false;
+      }
+    }
+  }
+
   mainwindow.webContents.send('session', response(200, {
     type: 'session',
     session,
@@ -206,6 +227,17 @@ function selectSession(session) {
   notifyControllers(response(200, {
     type: 'sessionstart',
   }));
+}
+
+function controllerDisconnect(ws) {
+  for (const id in sockets) {
+    if (sockets[id] === ws) {
+      mainwindow.webContents.send('players', JSON.stringify({
+        type: 'playeroffline',
+        id: id,
+      }));
+    }
+  }
 }
 
 const store = new Store();
