@@ -35,7 +35,7 @@
   </Column>
 </main>
 
-<style lang="scss">
+<style>
   :global(html[server] .app-only) {
     display: none;
   }
