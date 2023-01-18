@@ -3,12 +3,9 @@
   import Column from '$lib/Column.svelte';
   import Menu from '../../lib/Menu.svelte';
   import PlayerList from '../../lib/PlayerList.svelte';
+  import { players, session } from '$lib/stores';
 
-  /** @type {import('./$types').PageData} */
-  // export let data;
   let sessions = [];
-  let session = null;
-  let players = {};
   let waitingMsg = 'Loading sessions...';
 
   onMount(() => {
@@ -27,7 +24,7 @@
         waitingMsg = 'No saved sessions found';
       } else if (msg.type === 'session') {
         // TODO save session in sessionStorage, or maybe in a store?
-        session = msg.session;
+        $session = msg.session;
       }
     });
 
@@ -35,32 +32,32 @@
       msg = JSON.parse(msg);
       if (msg.type === 'allplayers') {
         // keep local data first (maybe not the best approach)
-        players = { ...msg.players, ...players };
+        $players = { ...msg.players, ...$players };
       } else if (msg.type === 'addplayer') {
         console.log('add player:', msg);
-        if (!players[msg.player.id]) {
-          players[msg.player.id] = msg.player;
+        if (!$players[msg.player.id]) {
+          $players[msg.player.id] = msg.player;
         } else {
-          players[msg.player.id].online = msg.player.online;
+          $players[msg.player.id].online = msg.player.online;
         }
       } else if (msg.type === 'playeronline') {
-        players[msg.id].online = true;
+        $players[msg.id].online = true;
       } else if (msg.type === 'playeroffline') {
-        players[msg.id] && (players[msg.id].online = false);
+        $players[msg.id] && ($players[msg.id].online = false);
       }
     });
 
     ipc.on('control', (e, msg) => {
       msg = JSON.parse(msg);
       if (msg.direction) {
-        if (!players[msg.id].position) {
-          players[msg.id].position = {
+        if (!$players[msg.id].position) {
+          $players[msg.id].position = {
             x: 0,
             y: 0,
           };
         }
-        players[msg.id].position.x += msg.direction.x;
-        players[msg.id].position.y += msg.direction.y;
+        $players[msg.id].position.x += msg.direction.x;
+        $players[msg.id].position.y += msg.direction.y;
       }
     });
   });
@@ -87,12 +84,12 @@
 </script>
 
 <svelte:head>
-  <title>Play D&amp;D{session ? ` - Session: ${session.name}` : ''}</title>
+  <title>Play D&amp;D{$session ? ` - Session: ${$session.name}` : ''}</title>
 </svelte:head>
 
-<Menu {session} />
+<Menu session={$session} />
 
-{#if !session}
+{#if !$session}
   <h1>Select or create a session</h1>
   <Column>
     {#if sessions.length}
@@ -127,21 +124,21 @@
       <label>Session name: <input type="text" name="name" required /></label>
       <button>Create</button>
     </form>
-    {#if Object.keys(players).length}
+    {#if Object.keys($players).length}
       <br />
       <h2>Players online:</h2>
-      <PlayerList {players} />
+      <PlayerList players={$players} />
     {/if}
   </Column>
 {:else}
-  <h1>Session: {session.name}</h1>
-  {#if players}
-    {#each Object.keys(players) as playerID}
-      {#if players[playerID].online}
+  <h1>Session: {$session.name}</h1>
+  {#if $players}
+    {#each Object.keys($players) as playerID}
+      {#if $players[playerID].online}
         <div
           class="player"
-          style="transform: translate({players[playerID].position
-            ?.x}px, {players[playerID].position?.y}px);"
+          style="transform: translate({$players[playerID].position
+            ?.x}px, {$players[playerID].position?.y}px);"
         >
           <div class="tag">
             {playerID.slice(0, 16)}{playerID.length > 15 ? '...' : ''}
