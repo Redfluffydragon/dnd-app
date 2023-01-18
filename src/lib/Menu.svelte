@@ -73,7 +73,7 @@
         {#if session?.players && Object.keys(session.players).length}
           <ul class="playerList">
             {#each Object.keys(session.players) as id}
-              <li><OnlineStatus status={session.players[id].online} /> {id} <button></button></li>
+              <li><OnlineStatus online={session.players[id].online} /> {id} <button></button></li>
             {/each}
           </ul>
         {:else}

@@ -1,8 +1,8 @@
 <script>
-  export let status;
+  export let online;
 </script>
 
-<span class:online={status}></span>
+<span class:online></span>
 
 <style>
   span {
