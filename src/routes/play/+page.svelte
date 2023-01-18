@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import Column from '$lib/Column.svelte';
+  import Menu from '../../lib/Menu.svelte';
 
   /** @type {import('./$types').PageData} */
   // export let data;
@@ -81,6 +82,8 @@
 <svelte:head>
   <title>Play D&amp;D{session ? ` - Session: ${session.name}` : ''}</title>
 </svelte:head>
+
+<Menu {session} />
 
 {#if !session}
   <h1>Select or create a session</h1>
