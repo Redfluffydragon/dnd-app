@@ -169,7 +169,7 @@ function createMainWindow() {
             type: 'playeradded',
             id: msg.id,
           }));
-          store.set(`sessions.${session.name}.players`, session.players);
+          store.set(`sessions.${session.id}.players`, session.players);
         }
         else if (msg.type === 'control') {
           mainwindow.webContents.send('control', response(200, msg));
