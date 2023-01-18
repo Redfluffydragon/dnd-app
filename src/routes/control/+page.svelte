@@ -15,7 +15,7 @@
   onMount(() => {
     id = localStorage.getItem('dnd-id') || '';
 
-    socket = new WebSocket(`ws://${location.host}/control`);
+    socket = new WebSocket(`ws://${location.hostname}/control`);
 
     // Connection opened
     socket.addEventListener('open', (event) => {
