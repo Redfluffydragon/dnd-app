@@ -124,15 +124,19 @@
 {:else}
   <h1>Session: {session.name}</h1>
   {#if session.players}
-    {#each Object.entries(session.players) as player}
-      <div
-        class="player"
-        style="transform: translate({session.players[player[0]].position
-          ?.x}px, {session.players[player[0]].position?.y}px);"
-      >
-        <div class="tag">{player[0].slice(0, 16)}{player[0].length > 15 ? '...' : ''}</div>
-        <div class="token" />
-      </div>
+    {#each Object.keys(session.players) as playerID}
+      {#if session.players[playerID].online}
+        <div
+          class="player"
+          style="transform: translate({session.players[playerID].position
+            ?.x}px, {session.players[playerID].position?.y}px);"
+        >
+          <div class="tag">
+            {playerID.slice(0, 16)}{playerID.length > 15 ? '...' : ''}
+          </div>
+          <div class="token" />
+        </div>
+      {/if}
     {/each}
   {/if}
 {/if}
