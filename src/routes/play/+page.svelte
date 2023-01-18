@@ -44,7 +44,6 @@
 
     ipc.on('control', (e, msg) => {
       msg = JSON.parse(msg);
-      console.log(msg);
       if (msg.direction) {
         if (!session.players[msg.id].position) {
           session.players[msg.id].position = {
@@ -148,7 +147,6 @@
     flex-direction: column;
     place-items: center;
     will-change: transform;
-
   }
 
   .tag {
