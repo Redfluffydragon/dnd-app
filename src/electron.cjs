@@ -86,6 +86,7 @@ function createMainWindow() {
       }
     }
     else if (data.type === 'newsession') {
+      // use the creation time for session IDs
       const now = Date.now();
       // Add new session name to list
       sessionIDs.push({
@@ -118,6 +119,8 @@ function createMainWindow() {
   exApp
     .use(express.static(path.join(__dirname, `..${staticDir}`)))
     .get(/^\/([^\.]+)$/, (req, res) => {
+      // don't serve the play page from this server, only accessible from inside the app
+      // maybe change to 404? pretend it doesn't exist as a web page?
       const slug = req.params[0] === 'play' ? 'out-of-app-error' : req.params[0];
       res.sendFile(path.join(__dirname, `..${staticDir}/${slug || 'index'}.html`));
     })
@@ -170,6 +173,9 @@ function createMainWindow() {
             type: 'playeradded',
             id: msg.id,
           }));
+          // TODO better storage for players
+          // probably store players separately, with different stats per session
+          // session.players would then be an array of player IDs
           store.set(`sessions.${session.id}.players`, session.players);
         }
         else if (msg.type === 'control') {
