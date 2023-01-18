@@ -149,6 +149,7 @@ function createMainWindow() {
           if (!session.players[msg.id]) {
             session.players[msg.id] = {
               id: msg.id,
+              online: true,
             };
             mainwindow.webContents.send('players', JSON.stringify({
               type: 'addplayer',
