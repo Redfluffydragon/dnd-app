@@ -2,15 +2,18 @@
   import OnlineStatus from './OnlineStatus.svelte';
 
   export let players;
+  export let filter = () => true;
 </script>
 
 {#if players}
   <ul>
     {#each Object.keys(players) as id (id)}
-      <li>
-        <OnlineStatus online={players[id].online} />
-        {players[id].name}
-      </li>
+      {#if filter(players[id])}
+        <li>
+          <OnlineStatus online={players[id].online} />
+          {players[id].name}
+        </li>
+      {/if}
     {/each}
   </ul>
 {/if}
