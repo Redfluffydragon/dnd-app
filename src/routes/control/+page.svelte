@@ -53,6 +53,11 @@
       waitingMsg = 'Connection lost. Try reloading.';
     });
 
+    socket.addEventListener('error', (event) => {
+      console.log(event);
+      waitingMsg = 'Connection lost. Try reloading.';
+    });
+
     // Controller clicks
     document.addEventListener(
       'click',
