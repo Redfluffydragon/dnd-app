@@ -212,7 +212,8 @@ function createMainWindow() {
           // confirm new player and send ID to store in localStorage
           ws.send(response(200, {
             type: 'playeradded',
-            id: id,
+            id,
+            name: players[id].name,
           }));
 
           // Notify main window of player - main window checks if it know about it or not
