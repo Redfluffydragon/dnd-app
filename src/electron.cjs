@@ -246,6 +246,8 @@ const sessionIDs = store.get('sessionIDs') || [];
 
 let session = null;
 
+// store sockets without IDs to make it easier to send to all of them
+// Might be able to use expressWs.getWss().clients instead
 const tempSockets = [];
 // store sockets separately because they don't need to be persistently stored
 const sockets = {};

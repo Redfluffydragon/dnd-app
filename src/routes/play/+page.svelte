@@ -24,7 +24,7 @@
         sessions = msg.sessions;
         waitingMsg = 'No saved sessions found';
       } else if (msg.type === 'session') {
-        // TODO save session in sessionStorage
+        // TODO save session in sessionStorage, or maybe in a store?
         session = msg.session;
       }
     });
