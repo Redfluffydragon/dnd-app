@@ -38,6 +38,7 @@
         } else if (e.type === 'sessionstart') {
           waitingMsg = null;
         } else if (e.type === 'playeradded') {
+          waitingMsg = null;
           id = e.id;
           localStorage.setItem('dnd-id', e.id);
         }
@@ -129,7 +130,7 @@
     <button>Join</button>
     <p class="error">{error}</p>
   </form>
-{:else}
+{:else if !waitingMsg}
   <h1>Player: {id}</h1>
   <Column>
     <Joystick
