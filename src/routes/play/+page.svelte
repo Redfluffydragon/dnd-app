@@ -129,7 +129,7 @@
     {#if Object.keys($players).length}
       <br />
       <h2>Players online:</h2>
-      <PlayerList players={$players} />
+      <PlayerList players={$players} filter={(player) => player.online} />
     {/if}
   </Column>
 {:else}
