@@ -309,7 +309,11 @@ console.log('Store location: ', app.getPath('userData'));
 const sessionIDs = store.get('sessionIDs') || [];
 
 let session = null;
-const players = store.get('players') || []; // an array of player IDs
+const players = store.get('players') || {}; // an array of player IDs
+// set all to offline to start
+for (const id in players) {
+  players[id].online = false;
+}
 
 // store sockets without IDs to make it easier to send to all of them
 // Might be able to use expressWs.getWss().clients instead
