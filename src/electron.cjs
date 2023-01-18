@@ -184,12 +184,6 @@ function createMainWindow() {
               name: msg.name,
               online: true,
             };
-
-            // confirm new player and send ID to store in localStorage
-            ws.send(response(200, {
-              type: 'playeradded',
-              id: id,
-            }));
           }
           // make sure the request has an ID
           else if (!msg.id) {
@@ -215,6 +209,12 @@ function createMainWindow() {
           // link socket to player id
           sockets[id] = ws;
 
+          // confirm new player and send ID to store in localStorage
+          ws.send(response(200, {
+            type: 'playeradded',
+            id: id,
+          }));
+
           // Notify main window of player - main window checks if it know about it or not
           mainwindow.webContents.send('players', JSON.stringify({
             type: 'addplayer',
@@ -233,7 +233,6 @@ function createMainWindow() {
             store.set(`sessions.${session.id}.players`, session.players);
           }
         }
-
         else if (msg.type === 'control') {
           mainwindow.webContents.send('control', response(200, msg));
         }
