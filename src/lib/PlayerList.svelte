@@ -2,7 +2,6 @@
   import OnlineStatus from './OnlineStatus.svelte';
 
   export let players;
-  $: console.log(players);
 </script>
 
 {#if players}
