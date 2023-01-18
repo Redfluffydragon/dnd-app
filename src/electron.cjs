@@ -84,6 +84,12 @@ function createMainWindow() {
           sessions: sessionIDs,
         }));
       }
+
+      // sync players when ready
+      mainwindow.webContents.send('players', JSON.stringify({
+        type: 'allplayers',
+        players,
+      }));
     }
     else if (data.type === 'newsession') {
       // use the creation time for session IDs
@@ -101,7 +107,7 @@ function createMainWindow() {
         name: data.name,
         id: now,
         createdAt: now,
-        players: {},
+        players: [],
       }
       // Save session
       store.set(`sessions.${session.id}`, session);
@@ -126,58 +132,108 @@ function createMainWindow() {
     })
     .ws('/control', (ws, req) => {
       ws.on('message', msg => {
+        /** 
+         * connect controller
+         * connect player (enter ID/with ID from localStorage)
+           * store player here
+         * if session is started, put them in the session
+           * add player id to session.players, store session
+         * If not, send wait message 
+         * When session is selected, put all connected players with an ID in the session
+           * (Don't put them in the session if the controller doesn't have an ID yet)
+
+         * TODO better storage for players
+          probably store players separately, with different stats per session
+          session.players would then be an array of player IDs
+          only 
+
+        */
         msg = JSON.parse(msg);
-        console.log('controller:', msg);
 
-        if (!session) {
-          tempSockets.push(ws);
-          ws.send(response(503, {
-            msg: 'Session not started yet',
-          }));
-          return;
-        }
-        else if (msg.type === 'controllerconnected') {
+        // connect controller (not linked to a player yet)
+        if (msg.type === 'controllerconnected') {
           ws.send(response(200, {
-            type: 'sessionstart',
+            type: 'controllerconnected',
           }));
         }
+        // connect a player (link websocket to data & stuff)
+        else if (msg.type === 'connectplayer') {
+          let id;
+          if (msg.newPlayer) {
+            if (!msg.name) {
+              ws.send(response(400, {
+                msg: 'Missing player ID',
+              }));
+              return;
+            }
 
-        if (msg.type === 'connectplayer' && msg.id) {
-          if (msg.newPlayer && session.players[msg.id]) {
-            ws.send(response(409, {
-              msg: 'Player names must be unique',
+            // Ensure unique IDs
+            for (const tempID in players) {
+              if (players[tempID].name === msg.name) {
+                ws.send(response(409, {
+                  msg: 'Player names must be unique',
+                }));
+                return;
+              }
+            }
+
+            // Create new player
+            id = Date.now();
+            players[id] = {
+              id: id,
+              name: msg.name,
+              online: true,
+            };
+
+            // confirm new player and send ID to store in localStorage
+            ws.send(response(200, {
+              type: 'playeradded',
+              id: id,
+            }));
+          }
+          // make sure the request has an ID
+          else if (!msg.id) {
+            ws.send(response(400, {
+              msg: 'Missing player ID',
             }));
             return;
           }
-          if (!session.players[msg.id]) {
-            session.players[msg.id] = {
-              id: msg.id,
-              online: true,
-            };
-            mainwindow.webContents.send('players', JSON.stringify({
-              type: 'addplayer',
-              player: session.players[msg.id],
+          else {
+            id = msg.id;
+            // If it's not a new player, make sure the player exists
+            if (!Object.keys(players).includes(id)) {
+              ws.send(response(400, {
+                msg: 'Player does not exist. Would you like to add a new player?',
+              }));
+              return;
+            }
+
+            players[id].online = true;
+          }
+          store.set('players', players);
+
+          // link socket to player id
+          sockets[id] = ws;
+
+          // Notify main window of player - main window checks if it know about it or not
+          mainwindow.webContents.send('players', JSON.stringify({
+            type: 'addplayer',
+            player: players[id],
+          }));
+
+          if (!session) {
+            ws.send(response(503, {
+              msg: 'Session not started yet',
             }));
           }
           else {
-            session.players[msg.id].online = true;
-            mainwindow.webContents.send('players', JSON.stringify({
-              type: 'playeronline',
-              id: msg.id,
-            }));
+            if (!session.players?.includes(id)) {
+              session.players.push(id);
+            }
+            store.set(`sessions.${session.id}.players`, session.players);
           }
-          // link socket to player id
-          sockets[msg.id] = ws;
-
-          ws.send(response(200, {
-            type: 'playeradded',
-            id: msg.id,
-          }));
-          // TODO better storage for players
-          // probably store players separately, with different stats per session
-          // session.players would then be an array of player IDs
-          store.set(`sessions.${session.id}.players`, session.players);
         }
+
         else if (msg.type === 'control') {
           mainwindow.webContents.send('control', response(200, msg));
         }
@@ -211,8 +267,8 @@ function response(status, body) {
   })
 }
 
-function notifyControllers(msg) {
-  for (const socket of tempSockets) {
+function notifyAllSockets(msg) {
+  for (const socket of expressWs.getWss().clients) {
     socket.send(msg);
   }
 }
@@ -231,7 +287,7 @@ function selectSession(session) {
     session,
   }));
 
-  notifyControllers(response(200, {
+  notifyAllSockets(response(200, {
     type: 'sessionstart',
   }));
 }
@@ -248,10 +304,12 @@ function controllerDisconnect(ws) {
 }
 
 const store = new Store();
+console.log('Store location: ', app.getPath('userData'));
 
 const sessionIDs = store.get('sessionIDs') || [];
 
 let session = null;
+const players = store.get('players') || []; // an array of player IDs
 
 // store sockets without IDs to make it easier to send to all of them
 // Might be able to use expressWs.getWss().clients instead

@@ -11,6 +11,7 @@
   let socket;
   let error = '';
   let waitingMsg = 'Trying to connect...';
+  let formError = false;
 
   onMount(() => {
     id = localStorage.getItem('dnd-id') || '';
@@ -19,7 +20,7 @@
 
     // Connection opened
     socket.addEventListener('open', (event) => {
-      waitingMsg = 'Connected, waiting for session to start';
+      waitingMsg = 'Connected, waiting for server...';
       socket.send(message('controllerconnected'));
     });
 
@@ -32,18 +33,18 @@
       const e = JSON.parse(event.data);
 
       if (e.ok) {
-        if (e.type === 'sessionstart') {
+        if (e.type === 'controllerconnected') {
+          id && socket.send(message('connectplayer', { newPlayer: false }));
+        } else if (e.type === 'sessionstart') {
           waitingMsg = null;
-
-          if (id) {
-            socket.send(message('connectplayer', { newPlayer: false }));
-          }
         } else if (e.type === 'playeradded') {
           id = e.id;
           localStorage.setItem('dnd-id', e.id);
         }
       } else if (e.status === 503) {
-        // session not started yet, do nothing
+        waitingMsg = 'Connected, waiting for session to start...';
+      } else if (e.status === 400) {
+        formError = true;
       } else {
         error = e.msg;
       }
@@ -101,28 +102,29 @@
       >
     </Column>
   {/if}
-{:else if !id}
+{/if}
+{#if !id || formError}
   <h1>Add a new controller</h1>
   <form
     on:submit={(e) => {
       if (!browser) return;
 
       const data = new FormData(e.target);
-      const newID = data.get('id');
-      if (!newID) return;
+      const name = data.get('id');
+      if (!name) return;
       e.preventDefault();
 
       socket.send(
-        message('connectplayer', { newPlayer: data.get('new') }, newID)
+        message('connectplayer', { newPlayer: data.get('new'), name })
       );
     }}
   >
-    <label
-      >Please enter a player ID: <input type="text" name="id" required /></label
-    >
-    <label
-      >Add as new player: <input type="checkbox" name="new" checked /></label
-    >
+    <label>
+      Please enter a player ID: <input type="text" name="id" required />
+    </label>
+    <label>
+      Add as new player: <input type="checkbox" name="new" checked />
+    </label>
     <br />
     <button>Join</button>
     <p class="error">{error}</p>
@@ -142,7 +144,7 @@
         );
       }}
     />
-    // todo add name change functionality
+    <!-- todo add name change functionality -->
   </Column>
 {/if}
 

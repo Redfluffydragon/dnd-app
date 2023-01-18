@@ -2,11 +2,13 @@
   import { onMount } from 'svelte';
   import Column from '$lib/Column.svelte';
   import Menu from '../../lib/Menu.svelte';
+  import PlayerList from '../../lib/PlayerList.svelte';
 
   /** @type {import('./$types').PageData} */
   // export let data;
   let sessions = [];
   let session = null;
+  let players = {};
   let waitingMsg = 'Loading sessions...';
 
   onMount(() => {
@@ -32,27 +34,33 @@
     ipc.on('players', (e, msg) => {
       msg = JSON.parse(msg);
       if (msg.type === 'allplayers') {
-        session.players = msg.players;
-      } else if (msg.type === 'addplayer' && !session.players[msg.player.id]) {
-        session.players[msg.player.id] = msg.player;
+        // keep local data first (maybe not the best approach)
+        players = { ...msg.players, ...players };
+      } else if (msg.type === 'addplayer') {
+        console.log('add player:', msg);
+        if (!players[msg.player.id]) {
+          players[msg.player.id] = msg.player;
+        } else {
+          players[msg.player.id].online = msg.player.online;
+        }
       } else if (msg.type === 'playeronline') {
-        session.players[msg.id].online = true;
+        players[msg.id].online = true;
       } else if (msg.type === 'playeroffline') {
-        session.players[msg.id].online = false;
+        players[msg.id] && (players[msg.id].online = false);
       }
     });
 
     ipc.on('control', (e, msg) => {
       msg = JSON.parse(msg);
       if (msg.direction) {
-        if (!session.players[msg.id].position) {
-          session.players[msg.id].position = {
+        if (!players[msg.id].position) {
+          players[msg.id].position = {
             x: 0,
             y: 0,
           };
         }
-        session.players[msg.id].position.x += msg.direction.x;
-        session.players[msg.id].position.y += msg.direction.y;
+        players[msg.id].position.x += msg.direction.x;
+        players[msg.id].position.y += msg.direction.y;
       }
     });
   });
@@ -122,13 +130,13 @@
   </Column>
 {:else}
   <h1>Session: {session.name}</h1>
-  {#if session.players}
-    {#each Object.keys(session.players) as playerID}
-      {#if session.players[playerID].online}
+  {#if players}
+    {#each Object.keys(players) as playerID}
+      {#if players[playerID].online}
         <div
           class="player"
-          style="transform: translate({session.players[playerID].position
-            ?.x}px, {session.players[playerID].position?.y}px);"
+          style="transform: translate({players[playerID].position
+            ?.x}px, {players[playerID].position?.y}px);"
         >
           <div class="tag">
             {playerID.slice(0, 16)}{playerID.length > 15 ? '...' : ''}
