@@ -133,7 +133,6 @@
     {/if}
   </Column>
 {:else}
-  <h1>Session: {$session.name}</h1>
   <Session />
 {/if}
 

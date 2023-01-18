@@ -42,6 +42,7 @@
         <path d="M50 2L2 50M2 2L50 50" stroke="currentColor" stroke-width="5" />
       </svg>
     </button>
+    <h2>{session.name}</h2>
     <li>
       <button
         on:click={async () => {
@@ -114,6 +115,11 @@
     align-self: flex-end;
   }
 
+  menu h2, menu p {
+    margin: 0;
+    padding: 1ch;
+  }
+
   menu li button:hover {
     background: rgba(0, 0, 0, 0.173);
   }
@@ -121,6 +127,7 @@
   menu li button {
     width: 100%;
     text-align: left;
+    padding: 1ch 3ch;
   }
 
   canvas {
