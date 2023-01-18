@@ -1,5 +1,6 @@
 <script>
   import { players } from '$lib/stores';
+  import OnlineStatus from './OnlineStatus.svelte';
   export let playerID;
 
   $: player = $players[playerID];
@@ -10,6 +11,9 @@
   style="transform: translate({player.position?.x}px, {player.position?.y}px);"
 >
   <div class="tag">
+    {#if !player.online}
+      <OnlineStatus online={false} />
+    {/if}
     {player.name.slice(0, 16)}{player.name.length > 15 ? '...' : ''}
   </div>
   <div class="token" />
@@ -25,7 +29,9 @@
   }
 
   .tag {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 0.5ch;
   }
 
   .token {
