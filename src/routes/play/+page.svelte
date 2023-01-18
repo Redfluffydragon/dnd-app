@@ -4,6 +4,7 @@
   import Menu from '../../lib/Menu.svelte';
   import PlayerList from '../../lib/PlayerList.svelte';
   import { players, session } from '$lib/stores';
+  import Session from '../../lib/Session.svelte';
 
   let sessions = [];
   let waitingMsg = 'Loading sessions...';
@@ -23,7 +24,6 @@
         sessions = msg.sessions;
         waitingMsg = 'No saved sessions found';
       } else if (msg.type === 'session') {
-        // TODO save session in sessionStorage, or maybe in a store?
         $session = msg.session;
       }
     });
@@ -134,46 +134,11 @@
   </Column>
 {:else}
   <h1>Session: {$session.name}</h1>
-  {#if $players}
-    {#each Object.keys($players) as playerID}
-      {#if $players[playerID].online}
-        <div
-          class="player"
-          style="transform: translate({$players[playerID].position
-            ?.x}px, {$players[playerID].position?.y}px);"
-        >
-          <div class="tag">
-            {playerID.slice(0, 16)}{playerID.length > 15 ? '...' : ''}
-          </div>
-          <div class="token" />
-        </div>
-      {/if}
-    {/each}
-  {/if}
+  <Session />
 {/if}
 
 <style>
   h2 {
     margin-bottom: 0;
-  }
-
-  .player {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    place-items: center;
-    will-change: transform;
-  }
-
-  .tag {
-    text-align: center;
-  }
-
-  .token {
-    background: var(--primary);
-    width: 4em;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    transition: transform 20ms;
   }
 </style>
