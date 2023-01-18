@@ -4,10 +4,12 @@
   import Joystick from '../../lib/Joystick.svelte';
   import Column from '../../lib/Column.svelte';
 
-  /** @type {import('./$types').PageData} */
-  // export let data;
+  // TODO something for anti-sleep (play a small video?)
+  // should be optional - per device or per player?
 
   let id = '';
+  let globalName = '';
+  let sessionName = '';
   let socket;
   let error = '';
   let waitingMsg = 'Trying to connect...';
@@ -15,6 +17,7 @@
 
   onMount(() => {
     id = localStorage.getItem('dnd-id') || '';
+    globalName = localStorage.getItem('dnd-name') || '';
 
     socket = new WebSocket(`ws://${location.hostname}/control`);
 
@@ -40,7 +43,9 @@
         } else if (e.type === 'playeradded') {
           waitingMsg = null;
           id = e.id;
+          globalName = e.name;
           localStorage.setItem('dnd-id', e.id);
+          localStorage.setItem('dnd-name', e.name);
         }
       } else if (e.status === 503) {
         waitingMsg = 'Connected, waiting for session to start...';
@@ -111,12 +116,12 @@
       if (!browser) return;
 
       const data = new FormData(e.target);
-      const name = data.get('id');
-      if (!name) return;
+      const newName = data.get('id');
+      if (!newName) return;
       e.preventDefault();
 
       socket.send(
-        message('connectplayer', { newPlayer: data.get('new'), name })
+        message('connectplayer', { newPlayer: data.get('new'), name: newName })
       );
     }}
   >
@@ -131,7 +136,7 @@
     <p class="error">{error}</p>
   </form>
 {:else if !waitingMsg}
-  <h1>Player: {id}</h1>
+  <h1>Player: {sessionName || globalName}</h1>
   <Column>
     <Joystick
       on:input={(e) => {
