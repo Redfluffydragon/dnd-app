@@ -1,13 +1,13 @@
 <script>
   import QRrious from 'qrious';
   import Column from '$lib/Column.svelte';
-  import { ip } from '$lib/stores';
+  import { ip, port } from '$lib/stores';
   import { browser } from '$app/environment';
 
   $: browser &&
     new QRrious({
       element: document.getElementById('controllerQR'),
-      value: `http://${$ip}:8000/control`,
+      value: `http://${$ip}:${port}/control`,
       size: Math.min(window.innerWidth, window.innerHeight) * 0.33,
     });
 </script>
@@ -24,7 +24,7 @@
     </p>
     <p>
       To add a player/controller, go to <a href="/control"
-        >{$ip ? `${$ip}:8000/control` : 'control'}</a
+        >{$ip ? `${$ip}:${port}/control` : 'control'}</a
       >
       {#if $ip}
         <br /> or scan the QR code below

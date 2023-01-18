@@ -1,7 +1,7 @@
 <script>
   import { fly, slide } from 'svelte/transition';
   import { onMount, tick } from 'svelte';
-  import { ip } from '$lib/stores';
+  import { ip, port } from '$lib/stores';
   import qrious from 'qrious';
   import OnlineStatus from './OnlineStatus.svelte';
 
@@ -50,7 +50,7 @@
           if (showQR) {
             new qrious({
               element: document.getElementById('qr'),
-              value: `http://${$ip}:8000/control`,
+              value: `http://${$ip}:${port}/control`,
               size: width,
             });
           }
