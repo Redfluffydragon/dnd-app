@@ -2,14 +2,15 @@
   import QRrious from 'qrious';
   import Column from '$lib/Column.svelte';
   import { ip, port } from '$lib/stores';
-  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
 
-  $: browser &&
+  onMount(() => {
     new QRrious({
       element: document.getElementById('controllerQR'),
       value: `http://${$ip}:${port}/control`,
       size: Math.min(window.innerWidth, window.innerHeight) * 0.33,
     });
+  });
 </script>
 
 <svelte:head>
