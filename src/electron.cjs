@@ -17,7 +17,7 @@ const port = process.env.PORT || 3000;
 const isdev = !app.isPackaged || (process.env.NODE_ENV == "development");
 let mainwindow;
 
-const serverPort = 8000;
+const serverPort = 80;
 
 function loadVite(port) {
   mainwindow.loadURL(`http://localhost:${port}`).catch(() => {
