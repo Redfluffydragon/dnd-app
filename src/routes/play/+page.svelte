@@ -127,6 +127,11 @@
       <label>Session name: <input type="text" name="name" required /></label>
       <button>Create</button>
     </form>
+    {#if Object.keys(players).length}
+      <br />
+      <h2>Players online:</h2>
+      <PlayerList {players} />
+    {/if}
   </Column>
 {:else}
   <h1>Session: {session.name}</h1>
@@ -149,6 +154,10 @@
 {/if}
 
 <style>
+  h2 {
+    margin-bottom: 0;
+  }
+
   .player {
     position: absolute;
     display: flex;

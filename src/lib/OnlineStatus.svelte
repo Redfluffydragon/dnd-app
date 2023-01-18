@@ -8,7 +8,7 @@
   span {
     display: inline-block;
     width: 1em;
-    border: 2px solid var(--primary-text);
+    border: 2px solid;
     aspect-ratio: 1;
     border-radius: 999px;
     background: red;

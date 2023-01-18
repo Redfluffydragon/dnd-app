@@ -4,6 +4,7 @@
   import { ip, port } from '$lib/stores';
   import qrious from 'qrious';
   import OnlineStatus from './OnlineStatus.svelte';
+    import PlayerList from './PlayerList.svelte';
 
   export let session = {};
 
@@ -70,12 +71,10 @@
         }}>Show players</button
       >
       {#if showPlayers}
-        {#if session?.players && Object.keys(session.players).length}
-          <ul class="playerList">
-            {#each Object.keys(session.players) as id}
-              <li><OnlineStatus online={session.players[id].online} /> {id} <button></button></li>
-            {/each}
-          </ul>
+        {#if !session}
+          <p>No session selected</p>
+        {:else if session.players && Object.keys(session.players).length}
+          <PlayerList players={session.players} />
         {:else}
           <p>No players in this session</p>
         {/if}
@@ -124,12 +123,5 @@
 
   canvas {
     max-width: 100%;
-  }
-
-  .playerList li {
-    display: grid;
-    grid-template-columns: 1em 1fr;
-    align-items: center;
-    gap: 1ch;
   }
 </style>
