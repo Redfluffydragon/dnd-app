@@ -3,10 +3,10 @@
   import { onMount, tick } from 'svelte';
   import { ip, port } from '$lib/stores';
   import qrious from 'qrious';
-  import OnlineStatus from './OnlineStatus.svelte';
-    import PlayerList from './PlayerList.svelte';
+  import PlayerList from './PlayerList.svelte';
 
   export let session = {};
+  export let players = {};
 
   let menu;
   let showMenu = false;
@@ -73,8 +73,10 @@
       {#if showPlayers}
         {#if !session}
           <p>No session selected</p>
-        {:else if session.players && Object.keys(session.players).length}
-          <PlayerList players={session.players} />
+        {:else if players && Object.keys(players).length}
+          <div transition:slide>
+            <PlayerList players={players} />
+          </div>
         {:else}
           <p>No players in this session</p>
         {/if}

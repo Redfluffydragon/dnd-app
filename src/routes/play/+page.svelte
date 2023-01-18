@@ -87,7 +87,7 @@
   <title>Play D&amp;D{$session ? ` - Session: ${$session.name}` : ''}</title>
 </svelte:head>
 
-<Menu session={$session} />
+<Menu session={$session} players={$players} />
 
 {#if !$session}
   <h1>Select or create a session</h1>
