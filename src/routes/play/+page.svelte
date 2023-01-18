@@ -48,6 +48,8 @@
     });
 
     ipc.on('control', (e, msg) => {
+      if (!$session) return;
+
       msg = JSON.parse(msg);
       if (msg.direction) {
         if (!$players[msg.id].position) {
