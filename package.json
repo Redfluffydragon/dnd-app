@@ -7,7 +7,7 @@
   "private": true,
   "main": "src/electron.cjs",
   "scripts": {
-    "dev": "concurrently --kill-others \"vite dev --host\" \"electron src/electron.cjs\"",
+    "dev": "concurrently --kill-others \"vite dev --host\" \"electron .\"",
     "sveltedev": "vite dev",
     "package": "npm run build && electron-builder --config electron-builder.config.json",
     "dev:package": "npm run build && electron-builder --config electron-builder.config.json --dir",
