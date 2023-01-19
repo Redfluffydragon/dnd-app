@@ -77,6 +77,12 @@ a {
   color: var(--primary);
 }
 
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1ch;
+}
+
 fieldset {
   display: contents;
 }

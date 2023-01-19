@@ -162,8 +162,6 @@
 <style>
   form {
     margin: 2ch;
-    display: flex;
-    flex-direction: column;
     place-items: center;
     gap: 2ch;
   }
