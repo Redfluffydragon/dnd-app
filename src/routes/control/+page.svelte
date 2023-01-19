@@ -3,7 +3,7 @@
   import { browser } from '$app/environment';
   import Joystick from '$lib/Joystick.svelte';
   import Column from '$lib/Column.svelte';
-    import Menu from '$lib/controller/Menu.svelte';
+  import Menu from '$lib/controller/Menu.svelte';
 
   // TODO something for anti-sleep (play a small video?)
   // should be optional - per device or per player?
@@ -98,7 +98,11 @@
   }
 </script>
 
-<Menu />
+<Menu
+  on:submit={(e) => {
+    socket.send(message(e.detail.type, { ...e.detail }));
+  }}
+/>
 
 {#if waitingMsg}
   <h1>{waitingMsg}</h1>
