@@ -42,6 +42,7 @@
     position: fixed;
     right: 0;
     top: 0;
+    margin: 0;
   }
 
   menu {
@@ -59,17 +60,18 @@
     max-width: 30ch;
     width: 30ch;
     color: var(--primary-text);
+    z-index: 100;
   }
 
   .closeButton {
     align-self: flex-end;
   }
 
-  menu li button:hover {
+  :global(menu li button:hover) {
     background: rgba(0, 0, 0, 0.173);
   }
 
-  menu li button {
+  :global(menu li button) {
     width: 100%;
     text-align: left;
     padding: 1ch 3ch;
