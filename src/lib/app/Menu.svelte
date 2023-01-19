@@ -73,5 +73,6 @@
 
   canvas {
     max-width: 100%;
+    aspect-ratio: 1;
   }
 </style>
