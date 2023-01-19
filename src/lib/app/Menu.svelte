@@ -29,7 +29,9 @@
 </script>
 
 <MenuWrapper bind:showMenu>
-  <h2>{session.name}</h2>
+  {#if session}
+    <h2>{session.name}</h2>
+  {/if}
   <li bind:this={qrContainer}>
     <Dropdown title="Show QR code" on:click={displayQR} bind:open={showQR}>
       <canvas id="qr" />
