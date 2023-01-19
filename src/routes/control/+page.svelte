@@ -36,6 +36,8 @@
       document.getElementById('messages').textContent = messages;
       const e = JSON.parse(event.data);
 
+      error = '';
+      formError = false;
       if (e.ok) {
         if (e.type === 'controllerconnected') {
           id && socket.send(message('connectplayer', { newPlayer: false }));
@@ -52,6 +54,7 @@
         waitingMsg = 'Connected, waiting for session to start...';
       } else if (e.status === 400) {
         formError = true;
+        error = e.msg;
       } else {
         error = e.msg;
       }
