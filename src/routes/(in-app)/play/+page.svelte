@@ -89,6 +89,7 @@
   <title>Play D&amp;D{$session ? ` - Session: ${$session.name}` : ''}</title>
 </svelte:head>
 
+<!-- !Menu might be too close to window close X? -->
 <Menu session={$session} players={$players} />
 
 {#if !$session}
