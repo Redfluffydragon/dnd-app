@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "name": "dnd_app",
   "type": "module",
-  "description": "Electron and SvelteKit integration",
+  "description": "An app for playing D&D",
   "license": "",
   "private": true,
   "main": "src/electron.cjs",
