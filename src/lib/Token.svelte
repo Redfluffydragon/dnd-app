@@ -21,7 +21,6 @@
 
 <style>
   .player {
-    position: absolute;
     display: flex;
     flex-direction: column;
     place-items: center;
