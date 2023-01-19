@@ -37,6 +37,11 @@ function createMainWindow() {
     width: mws.width,
     height: mws.height,
     title: 'D&D Main Screen',
+    titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: '#da3e3e',
+      symbolColor: 'white',
+    },
 
     webPreferences: {
       nodeIntegration: true,
