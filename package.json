@@ -28,7 +28,7 @@
     "@sveltejs/adapter-static": "^1.0.0-next.48",
     "@sveltejs/kit": "^1.0.0-next.562",
     "concurrently": "^6.5.1",
-    "electron": "^12.2.3",
+    "electron": "^22.0.3",
     "electron-builder": "^22.14.13",
     "electron-reloader": "^1.2.3",
     "sass": "^1.56.1",
