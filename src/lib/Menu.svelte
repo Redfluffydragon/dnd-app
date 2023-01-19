@@ -20,9 +20,15 @@
   on:click={() => {
     showMenu = !showMenu;
   }}
-  ><svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-    <path d="M7 32H57M7 50H57M7 14H57" stroke="currentColor" stroke-width="5" />
-  </svg>
+  ><slot name="icon">
+    <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+      <path
+        d="M7 32H57M7 50H57M7 14H57"
+        stroke="currentColor"
+        stroke-width="5"
+      />
+    </svg>
+  </slot>
 </button>
 {#if showMenu}
   <menu transition:fly={{ x: -250 }} class:outOfApp={!inApp}>
@@ -42,13 +48,18 @@
 <style>
   .menuButton,
   menu {
-    position: fixed;
+    top: 0;
     left: 0;
-    top: env(titlebar-area-height);
     margin: 0;
   }
 
+  .menuButton {
+    position: relative;
+    z-index: 100;
+  }
+
   menu {
+    position: absolute;
     list-style: none;
     display: flex;
     flex-direction: column;
@@ -60,11 +71,16 @@
     max-width: 30ch;
     width: 30ch;
     color: var(--primary-text);
-    z-index: 100;
+    z-index: 101;
   }
 
   .closeButton {
     align-self: flex-start;
+  }
+
+  :global(menu h2, menu p) {
+    margin: 0;
+    padding: 0 1ch;
   }
 
   :global(menu li button:hover) {
@@ -79,5 +95,9 @@
 
   .outOfApp {
     top: 0;
+  }
+
+  menu.outOfApp {
+    height: 100%;
   }
 </style>

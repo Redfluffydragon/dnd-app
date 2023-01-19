@@ -3,7 +3,7 @@
   import { ip, port } from '$lib/stores';
   import qrious from 'qrious';
   import PlayerList from '../PlayerList.svelte';
-  import MenuWrapper from '../MenuWrapper.svelte';
+  import MenuWrapper from '../Menu.svelte';
   import Dropdown from '../Dropdown.svelte';
 
   export let session = {};
@@ -55,12 +55,6 @@
 </MenuWrapper>
 
 <style>
-  h2,
-  p {
-    margin: 0;
-    padding: 1ch;
-  }
-
   li button:hover {
     background: rgba(0, 0, 0, 0.173);
   }
