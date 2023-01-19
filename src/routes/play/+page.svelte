@@ -1,10 +1,10 @@
 <script>
   import { onMount } from 'svelte';
   import Column from '$lib/Column.svelte';
-  import Menu from '../../lib/Menu.svelte';
-  import PlayerList from '../../lib/PlayerList.svelte';
+  import Menu from '$lib/app/Menu.svelte';
+  import PlayerList from '$lib/PlayerList.svelte';
   import { players, session } from '$lib/stores';
-  import Session from '../../lib/Session.svelte';
+  import Session from '$lib/Session.svelte';
 
   let sessions = [];
   let waitingMsg = 'Loading sessions...';
