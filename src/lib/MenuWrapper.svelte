@@ -3,6 +3,7 @@
   import { onMount } from 'svelte';
 
   export let showMenu = false;
+  export let inApp = true;
 
   onMount(() => {
     document.addEventListener('click', (e) => {
@@ -15,6 +16,7 @@
 
 <button
   class="menuButton imgButton"
+  class:outOfApp={!inApp}
   on:click={() => {
     showMenu = !showMenu;
   }}
@@ -23,7 +25,7 @@
   </svg>
 </button>
 {#if showMenu}
-  <menu transition:fly={{ x: 200 }}>
+  <menu transition:fly={{ x: 200 }} class:outOfApp={!inApp}>
     <button
       class="closeButton imgButton"
       on:click={() => {
@@ -38,10 +40,11 @@
 {/if}
 
 <style>
-  .menuButton {
+  .menuButton,
+  menu {
     position: fixed;
     right: 0;
-    top: 0;
+    top: env(titlebar-area-height);
     margin: 0;
   }
 
@@ -50,13 +53,10 @@
     display: flex;
     flex-direction: column;
     background: var(--primary);
-    position: fixed;
-    right: 0;
-    top: 0;
+
     box-shadow: -5px 5px 15px rgba(0, 0, 0, 0.334);
     height: 100%;
     padding: 0;
-    margin: 0;
     max-width: 30ch;
     width: 30ch;
     color: var(--primary-text);
@@ -75,5 +75,9 @@
     width: 100%;
     text-align: left;
     padding: 1ch 3ch;
+  }
+
+  .outOfApp {
+    top: 0;
   }
 </style>
