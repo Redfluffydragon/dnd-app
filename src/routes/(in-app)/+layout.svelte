@@ -15,12 +15,6 @@
 
 <nav />
 
-<header>
-  <div class="links">
-    <a href="/">Home</a>
-  </div>
-</header>
-
 <main>
   <slot />
 </main>
@@ -32,14 +26,6 @@
     height: env(titlebar-area-height);
     position: relative;
     z-index: 1000;
-  }
-
-  header {
-    display: flex;
-  }
-
-  .links {
-    padding: 1ch 2ch;
   }
 
   main {
