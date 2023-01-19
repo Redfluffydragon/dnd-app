@@ -25,7 +25,7 @@
   </svg>
 </button>
 {#if showMenu}
-  <menu transition:fly={{ x: 200 }} class:outOfApp={!inApp}>
+  <menu transition:fly={{ x: -250 }} class:outOfApp={!inApp}>
     <button
       class="closeButton imgButton"
       on:click={() => {
@@ -43,7 +43,7 @@
   .menuButton,
   menu {
     position: fixed;
-    right: 0;
+    left: 0;
     top: env(titlebar-area-height);
     margin: 0;
   }
@@ -54,7 +54,7 @@
     flex-direction: column;
     background: var(--primary);
 
-    box-shadow: -5px 5px 15px rgba(0, 0, 0, 0.334);
+    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.334);
     height: 100%;
     padding: 0;
     max-width: 30ch;
@@ -64,7 +64,7 @@
   }
 
   .closeButton {
-    align-self: flex-end;
+    align-self: flex-start;
   }
 
   :global(menu li button:hover) {
