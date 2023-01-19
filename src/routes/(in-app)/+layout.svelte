@@ -1,8 +1,13 @@
 <script>
   import { onMount } from 'svelte';
-  import { ip } from '$lib/stores';
+  import { ip, port } from '$lib/stores';
 
   onMount(() => {
+    // For dev, set the port to 3000
+    if (location.host.includes('localhost')) {
+      $port = ':3000';
+    }
+
     // notify main that the page is loaded
     ipc.send('ip', 'ready');
 
