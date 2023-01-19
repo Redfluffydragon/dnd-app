@@ -1,10 +1,10 @@
 <script>
-  import { slide } from 'svelte/transition';
   import { tick } from 'svelte';
   import { ip, port } from '$lib/stores';
   import qrious from 'qrious';
   import PlayerList from '../PlayerList.svelte';
   import MenuWrapper from '../MenuWrapper.svelte';
+  import Dropdown from '../Dropdown.svelte';
 
   export let session = {};
   export let players = {};
@@ -12,10 +12,9 @@
   let showMenu;
   let showQR = false;
   let qrContainer;
-  let showPlayers = false;
 
   $: showMenu && showQR && displayQR();
-  
+
   async function displayQR() {
     await tick();
     const width = qrContainer?.offsetWidth;
@@ -31,39 +30,23 @@
 
 <MenuWrapper bind:showMenu>
   <h2>{session.name}</h2>
-  <li>
-    <button
-      bind:this={qrContainer}
-      on:click={() => {
-        showQR = !showQR;
-        displayQR();
-      }}>Show QR code</button
-    >
-    {#if showQR}
-      <div transition:slide>
-        <canvas id="qr" />
-      </div>
-    {/if}
+  <li bind:this={qrContainer}>
+    <Dropdown title="Show QR code" on:click={displayQR} bind:open={showQR}>
+      <canvas id="qr" />
+    </Dropdown>
   </li>
   <!-- TODO -->
   <li><button>Switch session</button></li>
   <li>
-    <button
-      on:click={() => {
-        showPlayers = !showPlayers;
-      }}>Show players</button
-    >
-    {#if showPlayers}
+    <Dropdown title="Show players">
       {#if !session}
         <p>No session selected</p>
       {:else if players && Object.keys(players).length}
-        <div transition:slide>
-          <PlayerList {players} />
-        </div>
+        <PlayerList {players} />
       {:else}
         <p>No players in this session</p>
       {/if}
-    {/if}
+    </Dropdown>
   </li>
   <!-- TODO -->
   <li><button>Remove players</button></li>
