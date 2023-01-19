@@ -3,7 +3,7 @@
   import { ip, port } from '$lib/stores';
   import qrious from 'qrious';
   import PlayerList from '../PlayerList.svelte';
-  import MenuWrapper from '../Menu.svelte';
+  import Menu from '../Menu.svelte';
   import Dropdown from '../Dropdown.svelte';
 
   export let session = {};
@@ -28,7 +28,7 @@
   }
 </script>
 
-<MenuWrapper bind:showMenu>
+<Menu bind:showMenu>
   {#if session}
     <h2>{session.name}</h2>
   {/if}
@@ -52,7 +52,7 @@
   </li>
   <!-- TODO -->
   <li><button>Remove players</button></li>
-</MenuWrapper>
+</Menu>
 
 <style>
   li button:hover {

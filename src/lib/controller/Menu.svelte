@@ -1,12 +1,12 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import Dropdown from '../Dropdown.svelte';
-  import MenuWrapper from '../MenuWrapper.svelte';
+  import Menu from '../Menu.svelte';
 
   const dispatch = createEventDispatcher();
 </script>
 
-<MenuWrapper inApp={false}>
+<Menu inApp={false}>
   <li>
     <Dropdown title="Change global name">
       <form
@@ -43,7 +43,7 @@
       </form>
     </Dropdown>
   </li>
-</MenuWrapper>
+</Menu>
 
 <style>
   form {
