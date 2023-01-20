@@ -167,7 +167,7 @@ function createMainWindow() {
         if (confirm.response === 0) {
           const session = store.get(`sessions.${data.id}`);
           if (session) {
-            store.set(`deleted.sessions.${data.id}`, );
+            store.set(`deleted.sessions.${data.id}`, session);
             store.delete(`sessions.${data.id}`);
           }
 
