@@ -243,13 +243,6 @@ function createMainWindow() {
               online: true,
             };
           }
-          // make sure the request has an ID
-          else if (!msg.id) {
-            ws.send(response(400, {
-              msg: 'Missing player ID',
-            }));
-            return;
-          }
           else {
             id = msg.id;
             // If it's not a new player, make sure the player exists
