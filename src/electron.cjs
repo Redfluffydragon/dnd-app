@@ -19,6 +19,13 @@ let mainwindow;
 
 const serverPort = 80;
 
+const DEFAULT_SESSION_DATA = {
+  position: {
+    x: 0,
+    y: 0,
+  }
+}
+
 function loadVite(port) {
   mainwindow.loadURL(`http://localhost:${port}`).catch(() => {
     setTimeout(() => { loadVite(port); }, 200);
@@ -148,6 +155,8 @@ function createMainWindow() {
         type: 'question',
         title: 'Confirm delete session',
         message: `Are you sure you want to delete your session "${name}"?`,
+        // On Windows, only some button names show up in the expected place. (bottom right)
+        // If you put in some arbitrary button name, it will be in the main window part with an arrow next to it
         buttons: [
           'Yes',
           'No'
@@ -280,12 +289,7 @@ function createMainWindow() {
             name: players[id].name,
           }));
 
-          // Notify main window of player
-          mainwindow.webContents.send('players', JSON.stringify({
-            type: 'addplayer',
-            id,
-            player: players[id],
-          }));
+          
 
           if (!session) {
             ws.send(response(503, {
@@ -297,7 +301,15 @@ function createMainWindow() {
               session.players.push(id);
             }
             store.set(`sessions.${session.id}.players`, session.players);
+            players[id][session.id] = DEFAULT_SESSION_DATA;
           }
+
+          // Notify main window of player
+          mainwindow.webContents.send('players', JSON.stringify({
+            type: 'addplayer',
+            id,
+            player: players[id],
+          }));
         }
         else if (msg.type === 'control') {
           if (msg.direction) {
@@ -381,12 +393,7 @@ function selectSession(session) {
       }
       // When the session starts, make sure all players are initialized
       if (players[id] && !players[id][session.id]) {
-        players[id][session.id] = {
-          position: {
-            x: 0,
-            y: 0,
-          },
-        };
+        players[id][session.id] = DEFAULT_SESSION_DATA;
         // If it just created a new field, update render
         mainwindow.webContents.send('players', JSON.stringify({
           type: 'updateplayer',
