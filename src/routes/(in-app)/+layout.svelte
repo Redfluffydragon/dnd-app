@@ -37,7 +37,13 @@
     <li>Hi</li>
   </Menu>
   <Menu>
-    <svg slot="icon" width="54" height="54" viewBox="0 0 54 54" fill="currentColor">
+    <svg
+      slot="icon"
+      width="54"
+      height="54"
+      viewBox="0 0 54 54"
+      fill="currentColor"
+    >
       <path
         d="M35,18.5 C35,23.194 31.194,27 26.5,27 C21.806,27 18,23.194 18,18.5 C18,13.806 21.806,10 26.5,10 C31.194,10 35,13.806 35,18.5 Z"
       />
