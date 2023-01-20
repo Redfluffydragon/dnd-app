@@ -56,6 +56,10 @@ function createMainWindow() {
   mainwindow.once("close", () => {
     // save stuff before closing
     // TODO save button
+    // set all to offline when closing
+    for (const id in players) {
+      players[id].online = false;
+    }
     store.set('players', players);
     store.set(`sessions.${session.id}`, session);
     mainwindow = null;
@@ -355,10 +359,6 @@ const sessionIDs = store.get('sessionIDs') || [];
 
 let session = null;
 const players = store.get('players') || {}; // an array of player IDs
-// set all to offline to start
-for (const id in players) {
-  players[id].online = false;
-}
 
 // store sockets without IDs to make it easier to send to all of them
 // Might be able to use expressWs.getWss().clients instead
