@@ -29,6 +29,11 @@
     ipc.send('session', JSON.stringify({
       type: 'switchsession',
     }));
+    // re-get list of sessions because it goes away if you reload?
+    ipc.send('session', JSON.stringify({
+      type: 'readystate',
+      readyState: 'ready',
+    }));
     $session = null;
     showMenu = false;
   }
