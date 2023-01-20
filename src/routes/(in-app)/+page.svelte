@@ -5,10 +5,12 @@
   import { onMount } from 'svelte';
 
   onMount(() => {
-    new QRrious({
-      element: document.getElementById('controllerQR'),
-      value: `http://${$ip}${$port}/control`,
-      size: Math.min(window.innerWidth, window.innerHeight) * 0.33,
+    ip.subscribe(() => {
+      new QRrious({
+        element: document.getElementById('controllerQR'),
+        value: `http://${$ip}${$port}/control`,
+        size: Math.min(window.innerWidth, window.innerHeight) * 0.33,
+      });
     });
   });
 </script>
