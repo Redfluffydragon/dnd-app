@@ -8,7 +8,7 @@
 
 <div
   class="player"
-  style="transform: translate({player[$session.id].position?.x}px, {player[$session.id].position?.y}px);"
+  style="transform: translate({player?.[$session.id].position?.x}px, {player?.[$session.id].position?.y}px);"
 >
   <div class="tag">
     {#if !player.online}
