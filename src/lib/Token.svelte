@@ -1,5 +1,5 @@
 <script>
-  import { players } from '$lib/stores';
+  import { players, session } from '$lib/stores';
   import OnlineStatus from './OnlineStatus.svelte';
   export let playerID;
 
@@ -8,7 +8,7 @@
 
 <div
   class="player"
-  style="transform: translate({player.position?.x}px, {player.position?.y}px);"
+  style="transform: translate({player[$session.id].position?.x}px, {player[$session.id].position?.y}px);"
 >
   <div class="tag">
     {#if !player.online}

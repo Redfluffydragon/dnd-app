@@ -5,7 +5,7 @@
   import { players, session } from '$lib/stores';
   import Session from '$lib/Session.svelte';
 
-  let sessions = [];
+  let sessions = []; // list of session names and IDs
   let waitingMsg = 'Loading sessions...';
 
   onMount(() => {
@@ -50,17 +50,10 @@
 
     ipc.on('control', (e, msg) => {
       if (!$session) return;
-
       msg = JSON.parse(msg);
-      if (msg.direction) {
-        if (!$players[msg.id].position) {
-          $players[msg.id].position = {
-            x: 0,
-            y: 0,
-          };
-        }
-        $players[msg.id].position.x += msg.direction.x;
-        $players[msg.id].position.y += msg.direction.y;
+
+      if (msg.position) {
+        $players[msg.id][$session.id].position = msg.position;
       }
     });
   });

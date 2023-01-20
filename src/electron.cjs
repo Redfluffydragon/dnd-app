@@ -266,6 +266,21 @@ function createMainWindow() {
           }
         }
         else if (msg.type === 'control') {
+          if (msg.direction) {
+            if (!players[msg.id][session.id]?.position) {
+              players[msg.id][session.id].position = {
+                x: 0,
+                y: 0,
+              };
+            }
+            players[msg.id][session.id].position.x += msg.direction.x;
+            players[msg.id][session.id].position.y += msg.direction.y;
+
+            mainwindow.webContents.send('control', response(200, {
+              id: msg.id,
+              position: players[msg.id][session.id].position,
+            }));
+          }
           mainwindow.webContents.send('control', response(200, msg));
         }
         else if (msg.type === 'changeglobalname') {
