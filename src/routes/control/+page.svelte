@@ -101,6 +101,11 @@
   }
 </script>
 
+<svelte:head>
+  <title>D&D Controller</title>
+  <meta name="theme-color" content="#da3e3e">
+</svelte:head>
+
 <Menu
   on:submit={(e) => {
     socket.send(message(e.detail.type, { ...e.detail }));
