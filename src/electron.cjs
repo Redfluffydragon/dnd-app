@@ -303,7 +303,10 @@ function createMainWindow() {
               session.players.push(id);
             }
             store.set(`sessions.${session.id}.players`, session.players);
+
+            if (!players[id][session.id]) {
             players[id][session.id] = DEFAULT_SESSION_DATA;
+            }
           }
 
           // Notify main window of player
