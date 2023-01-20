@@ -16,7 +16,6 @@
 
 <button
   class="menuButton imgButton"
-  class:outOfApp={!inApp}
   on:click={() => {
     showMenu = !showMenu;
   }}
@@ -91,13 +90,5 @@
     width: 100%;
     text-align: left;
     padding: 1ch 3ch;
-  }
-
-  .outOfApp {
-    top: 0;
-  }
-
-  menu.outOfApp {
-    height: 100%;
   }
 </style>
