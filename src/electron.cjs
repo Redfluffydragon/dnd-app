@@ -338,11 +338,21 @@ function notifyAllSockets(msg) {
 }
 
 function selectSession(session) {
-  if (session.players) {
-    for (const id of session.players) {
+  for (const id in players) {
+    if (players[id].online) {
+      // Add all online players to session
+      // TODO might not be desired behavior
+      if (!session.players.includes(id)) {
+        session.players.push(id);
+      }
       // When the session starts, make sure all players are initialized
       if (players[id] && !players[id][session.id]) {
         players[id][session.id] = {};
+        // If it just created a new field, update render
+        mainwindow.webContents.send('players', JSON.stringify({
+          type: 'updateplayer',
+          player: players[id],
+        }));
       }
     }
   }
