@@ -53,7 +53,13 @@ function createMainWindow() {
     }
   });
 
-  mainwindow.once("close", () => { mainwindow = null; });
+  mainwindow.once("close", () => {
+    // save stuff before closing
+    // TODO save button
+    store.set('players', players);
+    store.set(`sessions.${session.id}`, session);
+    mainwindow = null;
+  });
 
   if (!isdev) mainwindow.removeMenu();
   // else mainwindow.webContents.openDevTools();
