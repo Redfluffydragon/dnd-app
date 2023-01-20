@@ -14,7 +14,6 @@
   let socket;
   let error = '';
   let waitingMsg = 'Trying to connect...';
-  let formError = false;
 
   onMount(() => {
     id = localStorage.getItem('dnd-id') || '';
@@ -37,7 +36,6 @@
       const e = JSON.parse(event.data);
 
       error = '';
-      formError = false;
       if (e.ok) {
         if (e.type === 'controllerconnected') {
           id && socket.send(message('connectplayer', { newPlayer: false }));
@@ -52,9 +50,7 @@
         }
       } else if (e.status === 503) {
         waitingMsg = 'Connected, waiting for session to start...';
-      } else if (e.status === 400) {
-        formError = true;
-        error = e.msg;
+        error = '';
       } else {
         error = e.msg;
       }
@@ -124,7 +120,7 @@
     </Column>
   {/if}
 {/if}
-{#if !id || formError}
+{#if !id || error}
   <h1>Add a new controller</h1>
   <form
     on:submit={(e) => {
