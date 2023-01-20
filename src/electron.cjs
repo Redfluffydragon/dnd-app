@@ -122,7 +122,7 @@ function createMainWindow() {
     }
     else if (data.type === 'newsession') {
       // use the creation time for session IDs
-      const now = Date.now();
+      const now = Date.now().toString();
       // Add new session name to list
       sessionIDs.push({
         name: data.name,
@@ -152,7 +152,7 @@ function createMainWindow() {
       session = null;
     }
     else if (data.type === 'deletesession') {
-      const name = sessionIDs.find(session => session.id === parseInt(data.id)).name;
+      const name = sessionIDs.find(session => session.id.toString() === data.id.toString()).name;
       dialog.showMessageBox(mainwindow, {
         type: 'question',
         title: 'Confirm delete session',
@@ -172,7 +172,7 @@ function createMainWindow() {
           }
 
           // TODO fix inconsistent number/string IDs
-          sessionIDs = sessionIDs.filter(session => session.id !== parseInt(data.id));
+          sessionIDs = sessionIDs.filter(session => session.id.toString() !== data.id.toString());
           store.set('sessionIDs', sessionIDs);
 
           mainwindow.webContents.send('session', JSON.stringify({
@@ -242,7 +242,7 @@ function createMainWindow() {
             }
 
             // Create new player
-            id = Date.now();
+            id = Date.now().toString();
             players[id] = {
               id: id,
               name: msg.name,
@@ -305,7 +305,7 @@ function createMainWindow() {
             store.set(`sessions.${session.id}.players`, session.players);
 
             if (!players[id][session.id]) {
-            players[id][session.id] = DEFAULT_SESSION_DATA;
+              players[id][session.id] = DEFAULT_SESSION_DATA;
             }
           }
 
