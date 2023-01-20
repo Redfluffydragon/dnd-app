@@ -13,7 +13,7 @@ const expressWs = require('express-ws')(exApp);
 const Store = require('electron-store');
 
 const loadURL = serve({ directory: "." });
-const port = process.env.PORT || 3000;
+const vitePort = process.env.PORT || 3000;
 const isdev = !app.isPackaged || (process.env.NODE_ENV == "development");
 let mainwindow;
 
@@ -59,7 +59,7 @@ function createMainWindow() {
   // else mainwindow.webContents.openDevTools();
   mws.manage(mainwindow);
 
-  if (isdev) loadVite(port);
+  if (isdev) loadVite(vitePort);
   else loadURL(mainwindow);
 
   mainwindow.once('ready-to-show', mainwindow.show);
