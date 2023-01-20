@@ -76,6 +76,6 @@
 
   main {
     padding: 10px;
-    margin-right: calc(1em + 2ch);
+    margin-left: calc(1em + 4ch);
   }
 </style>
