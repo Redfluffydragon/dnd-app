@@ -34,11 +34,7 @@
         $players = { ...msg.players, ...$players };
       } else if (msg.type === 'addplayer') {
         console.log('add player:', msg);
-        if (!$players[msg.player.id]) {
-          $players[msg.player.id] = msg.player;
-        } else {
-          $players[msg.player.id].online = msg.player.online;
-        }
+        $players[msg.id] = msg.player;
       } else if (msg.type === 'playeronline') {
         $players[msg.id].online = true;
       } else if (msg.type === 'playeroffline') {

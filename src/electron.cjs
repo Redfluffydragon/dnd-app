@@ -247,9 +247,10 @@ function createMainWindow() {
             name: players[id].name,
           }));
 
-          // Notify main window of player - main window checks if it know about it or not
+          // Notify main window of player
           mainwindow.webContents.send('players', JSON.stringify({
             type: 'addplayer',
+            id,
             player: players[id],
           }));
 
