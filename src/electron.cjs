@@ -61,7 +61,7 @@ function createMainWindow() {
       players[id].online = false;
     }
     store.set('players', players);
-    store.set(`sessions.${session.id}`, session);
+    session && store.set(`sessions.${session.id}`, session);
     mainwindow = null;
   });
 
