@@ -4,6 +4,7 @@
   import AppMenu from '$lib/app/AppMenu.svelte';
   import Menu from '$lib/Menu.svelte';
   import { players, session } from '$lib/stores';
+  import PlayerList from '$lib/PlayerList.svelte';
 
   onMount(() => {
     // For dev, set the port to 3000
@@ -55,6 +56,17 @@
       />
     </svg>
     <h2>Players</h2>
+    <li>
+      {#if !$session}
+        <p>No session selected</p>
+      {:else if $players && Object.keys($players).length}
+        <PlayerList players={$players} />
+      {:else}
+        <p>No players in this session</p>
+      {/if}
+    </li>
+    <!-- TODO -->
+    <li><button>Remove players</button></li>
   </Menu>
 </div>
 

@@ -2,10 +2,9 @@
   import { tick } from 'svelte';
   import { ip, port } from '$lib/stores';
   import qrious from 'qrious';
-  import PlayerList from '../PlayerList.svelte';
-  import Menu from '../Menu.svelte';
-  import Dropdown from '../Dropdown.svelte';
-  import { players, session } from '$lib/stores';
+  import Menu from '$lib/Menu.svelte';
+  import Dropdown from '$lib/Dropdown.svelte';
+  import { session } from '$lib/stores';
 
   let showMenu;
   let pinned;
@@ -60,19 +59,7 @@
     </Dropdown>
   </li>
   <li><button on:click={switchSession}>Switch sessions</button></li>
-  <li>
-    <Dropdown title="Show players">
-      {#if !$session}
-        <p>No session selected</p>
-      {:else if $players && Object.keys($players).length}
-        <PlayerList players={$players} />
-      {:else}
-        <p>No players in this session</p>
-      {/if}
-    </Dropdown>
-  </li>
-  <!-- TODO -->
-  <li><button>Remove players</button></li>
+  <!-- TODO save confirmation of some sort -->
   <li><button on:click={save}>Save</button></li>
 </Menu>
 
