@@ -5,9 +5,7 @@
   import PlayerList from '../PlayerList.svelte';
   import Menu from '../Menu.svelte';
   import Dropdown from '../Dropdown.svelte';
-
-  export let session = {};
-  export let players = {};
+  import { players, session } from '$lib/stores';
 
   let showMenu;
   let showQR = false;
@@ -26,25 +24,32 @@
       });
     }
   }
+
+  function switchSession() {
+    ipc.send('session', JSON.stringify({
+      type: 'switchsession',
+    }));
+    $session = null;
+    showMenu = false;
+  }
 </script>
 
 <Menu bind:showMenu>
-  {#if session}
-    <h2>{session.name}</h2>
+  {#if $session}
+    <h2>{$session.name}</h2>
   {/if}
   <li bind:this={qrContainer}>
     <Dropdown title="Show QR code" on:click={displayQR} bind:open={showQR}>
       <canvas id="qr" />
     </Dropdown>
   </li>
-  <!-- TODO -->
-  <li><button>Switch session</button></li>
+  <li><button on:click={switchSession}>Switch session</button></li>
   <li>
     <Dropdown title="Show players">
-      {#if !session}
+      {#if !$session}
         <p>No session selected</p>
-      {:else if players && Object.keys(players).length}
-        <PlayerList {players} />
+      {:else if $players && Object.keys($players).length}
+        <PlayerList players={$players} />
       {:else}
         <p>No players in this session</p>
       {/if}

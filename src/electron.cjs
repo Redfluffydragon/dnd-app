@@ -138,6 +138,10 @@ function createMainWindow() {
       session = store.get(`sessions.${data.id}`);
       selectSession(session);
     }
+    else if (data.type === 'switchsession') {
+      store.set(`sessions.${session.id}`, session);
+      session = null;
+    }
   });
 
   // Express server for controls

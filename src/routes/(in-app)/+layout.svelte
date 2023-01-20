@@ -24,7 +24,7 @@
 <nav />
 
 <div class="multimenu">
-  <AppMenu session={$session} players={$players} />
+  <AppMenu />
   <Menu>
     <svg slot="icon" width="48" height="48" viewBox="0 0 48 48" fill="none">
       <path
