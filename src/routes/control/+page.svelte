@@ -170,7 +170,7 @@
   <li><button>Edit avatar</button></li>
 </Menu>
 
-<span class="name">Name: {sessionName || globalName || ''}</span>
+<span class="name">Name: {sessionName || globalName || ''} {id}</span>
 
 {#if waitingMsg}
   <h1>{waitingMsg}</h1>
