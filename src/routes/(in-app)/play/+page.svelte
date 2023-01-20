@@ -21,6 +21,7 @@
       msg = JSON.parse(msg);
       if (msg.type === 'listsessions' && msg.sessions) {
         sessions = msg.sessions;
+        // set waiting message here, after checking for sessions; if there are no sessions, it will display
         waitingMsg = 'No saved sessions found';
       } else if (msg.type === 'session') {
         $session = msg.session;
@@ -33,6 +34,7 @@
         // keep local data first (maybe not the best approach)
         $players = { ...msg.players, ...$players };
       } else if (msg.type === 'addplayer') {
+        // TODO consolidate addplayer and updateplayer
         console.log('add player:', msg);
         $players[msg.id] = msg.player;
       } else if (msg.type === 'playeronline') {
@@ -40,7 +42,7 @@
       } else if (msg.type === 'playeroffline') {
         $players[msg.id] && ($players[msg.id].online = false);
       } else if (msg.type === 'updateplayer') {
-        $players[msg.id] = {...$players[msg.id], ...msg.player};
+        $players[msg.id] = msg.player;
       }
     });
 
@@ -73,6 +75,15 @@
       })
     );
   }
+
+  function deleteSession(e) {
+    // tell main the user clicked delete so main can show a dialog
+    const id = new FormData(e.target.closest('form')).get('id');
+    ipc.send('session', JSON.stringify({
+      type: 'deletesession',
+      id,
+    }));
+  }
 </script>
 
 <svelte:head>
@@ -96,9 +107,13 @@
             <option value={sessionOption.id}>{sessionOption.name}</option>
           {/each}
         </select>
-        <button>Select</button>
-        <!-- TODO -->
-        <button type="button">Delete</button>
+        <div class="buttons">
+          <!-- TODO -->
+          <button type="button" class="dangerButton" on:click={deleteSession}
+            >Delete</button
+          >
+          <button class="goButton">Select</button>
+        </div>
       </form>
     {:else}
       <h2>{waitingMsg}</h2>
@@ -129,5 +144,17 @@
 <style>
   h2 {
     margin-bottom: 0;
+  }
+
+  form {
+    min-width: min(40ch, 100%);
+  }
+
+  input {
+    width: 100%;
+  }
+
+  .buttons {
+    text-align: center;
   }
 </style>

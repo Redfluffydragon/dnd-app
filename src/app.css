@@ -58,6 +58,15 @@ button svg {
   height: 1em;
 }
 
+.goButton {
+  background: hsl(115, 78%, 46%);
+  color: #000;
+}
+
+.dangerButton {
+  background: hsl(0, 68%, 35%);
+}
+
 p,
 h1,
 h2,

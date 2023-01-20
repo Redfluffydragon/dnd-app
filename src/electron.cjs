@@ -1,5 +1,5 @@
 // Electron imports
-const { app, ipcMain, BrowserWindow } = require("electron");
+const { app, ipcMain, BrowserWindow, dialog } = require("electron");
 const serve = require("electron-serve");
 const wsk = require("electron-window-state");
 try { require("electron-reloader")(module); } catch { }
@@ -141,6 +141,35 @@ function createMainWindow() {
     else if (data.type === 'switchsession') {
       store.set(`sessions.${session.id}`, session);
       session = null;
+    }
+    else if (data.type === 'deletesession') {
+      const name = sessionIDs.find(session => session.id === parseInt(data.id)).name;
+      dialog.showMessageBox(mainwindow, {
+        type: 'question',
+        title: 'Confirm delete session',
+        message: `Are you sure you want to delete your session "${name}"?`,
+        buttons: [
+          'Yes',
+          'No'
+        ]
+      }).then(confirm => {
+        if (confirm.response === 0) {
+          const session = store.get(`sessions.${data.id}`);
+          if (session) {
+            store.set(`deleted.sessions.${data.id}`, );
+            store.delete(`sessions.${data.id}`);
+          }
+
+          // TODO fix inconsistent number/string IDs
+          sessionIDs = sessionIDs.filter(session => session.id !== parseInt(data.id));
+          store.set('sessionIDs', sessionIDs);
+
+          mainwindow.webContents.send('session', JSON.stringify({
+            type: 'listsessions',
+            sessions: sessionIDs,
+          }));
+        }
+      });
     }
   });
 
@@ -392,7 +421,7 @@ function controllerDisconnect(ws) {
 const store = new Store();
 console.log('Store location: ', app.getPath('userData'));
 
-const sessionIDs = store.get('sessionIDs') || [];
+let sessionIDs = store.get('sessionIDs') || [];
 
 let session = null;
 const players = store.get('players') || {}; // an array of player IDs
