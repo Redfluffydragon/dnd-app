@@ -94,7 +94,7 @@ function createMainWindow() {
   }
 
   ipcMain.on('ip', () => {
-    mainwindow.webContents.send('ip', addresses[0]);
+    mainwindow.webContents.send('ip', addresses[addresses.length - 1]);
   });
 
   ipcMain.on('save', save)
