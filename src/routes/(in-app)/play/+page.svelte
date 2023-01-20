@@ -43,6 +43,8 @@
         $players[msg.id].online = true;
       } else if (msg.type === 'playeroffline') {
         $players[msg.id] && ($players[msg.id].online = false);
+      } else if (msg.type === 'updateplayer') {
+        $players[msg.id] = {...$players[msg.id], ...msg.player};
       }
     });
 

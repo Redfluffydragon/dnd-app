@@ -253,6 +253,24 @@ function createMainWindow() {
         else if (msg.type === 'control') {
           mainwindow.webContents.send('control', response(200, msg));
         }
+        else if (msg.type === 'changeglobalname') {
+          console.log('Change global name', msg.name);
+          players[msg.id].name = msg.name;
+          store.set(`players.${msg.id}.name`, msg.name);
+          mainwindow.webContents.send('players', response(200, {
+            type: 'updateplayer',
+            id: msg.id,
+            player: {
+              name: msg.name,
+            }
+          }));
+
+          ws.send(response(200, {
+            type: 'changeglobalname',
+            name: msg.name,
+          }));
+        }
+        // TODO session name change (and also session names)
       });
 
       ws.on('close', () => {

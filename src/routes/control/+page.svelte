@@ -3,7 +3,8 @@
   import { browser } from '$app/environment';
   import Joystick from '$lib/Joystick.svelte';
   import Column from '$lib/Column.svelte';
-  import Menu from '$lib/controller/Menu.svelte';
+  import Menu from '$lib/Menu.svelte';
+  import Dropdown from '../../lib/Dropdown.svelte';
 
   // TODO something for anti-sleep (play a small video?)
   // should be optional - per device or per player?
@@ -14,6 +15,7 @@
   let socket;
   let error = '';
   let waitingMsg = 'Trying to connect...';
+  let showMenu;
 
   onMount(() => {
     id = localStorage.getItem('dnd-id') || '';
@@ -47,6 +49,10 @@
           globalName = e.name;
           localStorage.setItem('dnd-id', e.id);
           localStorage.setItem('dnd-name', e.name);
+        } else if (e.type === 'changeglobalname') {
+          globalName = e.name;
+          localStorage.setItem('dnd-name', globalName);
+          showMenu = false;
         }
       } else if (e.status === 503) {
         waitingMsg = 'Connected, waiting for session to start...';
@@ -99,14 +105,71 @@
 
 <svelte:head>
   <title>D&D Controller</title>
-  <meta name="theme-color" content="#da3e3e">
+  <meta name="theme-color" content="#da3e3e" />
 </svelte:head>
 
-<Menu
-  on:submit={(e) => {
-    socket.send(message(e.detail.type, { ...e.detail }));
-  }}
-/>
+<Menu bind:showMenu>
+  <li>
+    <Dropdown title="Change global name">
+      <form
+        on:submit={(e) => {
+          const name = new FormData(e.target).get('name');
+          if (!name) return;
+          e.preventDefault();
+          socket.send(
+            message('changeglobalname', {
+              name,
+            })
+          );
+        }}
+      >
+        <label
+          >New name:<input
+            on:focus={(e) => {
+              e.target.select();
+            }}
+            type="text"
+            name="name"
+            required
+            value={globalName}
+          /></label
+        >
+        <button>Change</button>
+      </form>
+    </Dropdown>
+  </li>
+  <li>
+    <Dropdown title="Change session name">
+      <form
+        on:submit={(e) => {
+          const name = new FormData(e.target).get('name');
+          if (!name) return;
+          e.preventDefault();
+          socket.send(
+            message('changesessionname', {
+              name,
+            })
+          );
+        }}
+      >
+        <label
+          >New name:<input
+            on:focus={(e) => {
+              e.target.select();
+            }}
+            type="text"
+            name="name"
+            required
+          /></label
+        >
+        <button>Change</button>
+      </form>
+    </Dropdown>
+  </li>
+  <li><button>Edit avatar</button></li>
+</Menu>
+
+<span class="name">Name: {sessionName || globalName || ''}</span>
 
 {#if waitingMsg}
   <h1>{waitingMsg}</h1>
@@ -176,5 +239,23 @@
 
   .error {
     color: red;
+  }
+
+  li {
+    padding: 0;
+  }
+
+  form button {
+    text-align: center;
+    background: var(--secondary);
+    margin: 0;
+  }
+
+  label {
+    text-align: center;
+  }
+
+  input {
+    width: 100%;
   }
 </style>
