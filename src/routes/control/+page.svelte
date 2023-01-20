@@ -4,7 +4,7 @@
   import Joystick from '$lib/Joystick.svelte';
   import Column from '$lib/Column.svelte';
   import Menu from '$lib/Menu.svelte';
-  import Dropdown from '../../lib/Dropdown.svelte';
+  import Dropdown from '$lib/Dropdown.svelte';
 
   // TODO something for anti-sleep (play a small video?)
   // should be optional - per device or per player?
