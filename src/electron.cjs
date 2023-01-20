@@ -67,8 +67,8 @@ function createMainWindow() {
     for (const id in players) {
       players[id].online = false;
     }
-    store.set('players', players);
-    session && store.set(`sessions.${session.id}`, session);
+
+    save();
     mainwindow = null;
   });
 
@@ -96,6 +96,8 @@ function createMainWindow() {
   ipcMain.on('ip', () => {
     mainwindow.webContents.send('ip', addresses[0]);
   });
+
+  ipcMain.on('save', save)
 
   ipcMain.on('session', (event, data) => {
     data = JSON.parse(data);
@@ -289,7 +291,7 @@ function createMainWindow() {
             name: players[id].name,
           }));
 
-          
+
 
           if (!session) {
             ws.send(response(503, {
@@ -423,6 +425,11 @@ function controllerDisconnect(ws) {
       }));
     }
   }
+}
+
+function save() {
+  store.set('players', players);
+  session && store.set(`sessions.${session.id}`, session);
 }
 
 const store = new Store();

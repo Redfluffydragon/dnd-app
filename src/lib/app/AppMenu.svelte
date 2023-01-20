@@ -13,7 +13,9 @@
   let qrContainer;
 
   $: showMenu && showQR && displayQR();
-
+  function save() {
+    ipc.send('save');
+  }
   async function displayQR() {
     await tick();
     const width = qrContainer?.offsetWidth;
@@ -29,14 +31,20 @@
   function switchSession() {
     if (!$session) return;
 
-    ipc.send('session', JSON.stringify({
-      type: 'switchsession',
-    }));
+    ipc.send(
+      'session',
+      JSON.stringify({
+        type: 'switchsession',
+      })
+    );
     // re-get list of sessions because it goes away if you reload?
-    ipc.send('session', JSON.stringify({
-      type: 'readystate',
-      readyState: 'ready',
-    }));
+    ipc.send(
+      'session',
+      JSON.stringify({
+        type: 'readystate',
+        readyState: 'ready',
+      })
+    );
     $session = null;
     !pinned && (showMenu = false);
   }
@@ -65,6 +73,7 @@
   </li>
   <!-- TODO -->
   <li><button>Remove players</button></li>
+  <li><button on:click={save}>Save</button></li>
 </Menu>
 
 <style>
