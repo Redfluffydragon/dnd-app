@@ -357,6 +357,7 @@ function selectSession(session) {
         // If it just created a new field, update render
         mainwindow.webContents.send('players', JSON.stringify({
           type: 'updateplayer',
+          id,
           player: players[id],
         }));
       }
