@@ -278,15 +278,6 @@ function createMainWindow() {
           // link socket to player id
           sockets[id] = ws;
 
-          // confirm new player and send ID to store in localStorage
-          ws.send(response(200, {
-            type: 'playeradded',
-            id,
-            name: players[id].name,
-          }));
-
-
-
           if (!session) {
             ws.send(response(503, {
               msg: 'Session not started yet',
@@ -302,6 +293,14 @@ function createMainWindow() {
               players[id][session.id] = DEFAULT_SESSION_DATA;
             }
           }
+
+          // confirm new player and send ID to store in localStorage
+          ws.send(response(200, {
+            type: 'playeradded',
+            id,
+            name: players[id].name,
+            ...(session ? { sessionName: players[id][session.id]?.name } : {}),
+          }));
 
           // Notify main window of player
           mainwindow.webContents.send('players', JSON.stringify({
@@ -335,9 +334,7 @@ function createMainWindow() {
           mainwindow.webContents.send('players', response(200, {
             type: 'updateplayer',
             id: msg.id,
-            player: {
-              name: msg.name,
-            }
+            player: players[msg.id],
           }));
 
           ws.send(response(200, {
@@ -345,7 +342,20 @@ function createMainWindow() {
             name: msg.name,
           }));
         }
-        // TODO session name change (and also session names)
+        else if (msg.type === 'changesessionname' && session) {
+          players[msg.id][session.id].name = msg.name;
+          store.set(`players.${msg.id}.${session.id}.name`, msg.name);
+          mainwindow.webContents.send('players', response(200, {
+            type: 'updateplayer',
+            id: msg.id,
+            player: players[msg.id],
+          }));
+
+          ws.send(response(200, {
+            type: 'changesessionname',
+            name: msg.name,
+          }));
+        }
       });
 
       ws.on('close', () => {
@@ -376,12 +386,6 @@ function response(status, body) {
   })
 }
 
-function notifyAllSockets(msg) {
-  for (const socket of expressWs.getWss().clients) {
-    socket.send(msg);
-  }
-}
-
 function selectSession(session) {
   for (const id in players) {
     if (players[id].online) {
@@ -408,9 +412,12 @@ function selectSession(session) {
     session,
   }));
 
-  notifyAllSockets(response(200, {
-    type: 'sessionstart',
-  }));
+  for (const id in sockets) {
+    sockets[id].send(response(200, {
+      type: 'sessionstart',
+      sessionName: players[id][session.id].name,
+    }));
+  }
 }
 
 function controllerDisconnect(ws) {

@@ -44,16 +44,20 @@
           id && socket.send(message('connectplayer', { newPlayer: false }));
         } else if (e.type === 'sessionstart') {
           waitingMsg = null;
+          sessionName = e.sessionName;
         } else if (e.type === 'playeradded') {
           waitingMsg = null;
           id = e.id;
           globalName = e.name;
+          sessionName = e.sessionName;
           localStorage.setItem('dnd-id', e.id);
           localStorage.setItem('dnd-name', e.name);
         } else if (e.type === 'changeglobalname') {
           globalName = e.name;
           localStorage.setItem('dnd-name', globalName);
           !pinned && (showMenu = false);
+        } else if (e.type === 'changesessionname') {
+          sessionName = e.name;
         }
       } else if (e.status === 503) {
         waitingMsg = 'Connected, waiting for session to start...';

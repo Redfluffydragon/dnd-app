@@ -4,17 +4,20 @@
   export let playerID;
 
   $: player = $players[playerID];
+  $: name = player?.[$session.id]?.name || player?.name || '';
 </script>
 
 <div
   class="player"
-  style="transform: translate({player?.[$session.id]?.position?.x}px, {player?.[$session.id]?.position?.y}px);"
+  style="transform: translate({player?.[$session.id]?.position?.x}px, {player?.[
+    $session.id
+  ]?.position?.y}px);"
 >
   <div class="tag">
     {#if !player.online}
       <OnlineStatus online={false} />
     {/if}
-    {player.name.slice(0, 16)}{player.name.length > 15 ? '...' : ''}
+    {name.slice(0, 16)}{name.length > 15 ? '...' : ''}
   </div>
   <div class="token" />
 </div>
