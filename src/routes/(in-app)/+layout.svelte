@@ -34,7 +34,7 @@
       />
     </svg>
 
-    <li>Hi</li>
+    <li><p>Hi</p></li>
   </Menu>
   <Menu>
     <svg
