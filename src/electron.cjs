@@ -62,7 +62,6 @@ function createMainWindow() {
 
   mainwindow.once("close", () => {
     // save stuff before closing
-    // TODO save button
     // set all to offline when closing
     for (const id in players) {
       players[id].online = false;
@@ -171,7 +170,7 @@ function createMainWindow() {
             store.delete(`sessions.${data.id}`);
           }
 
-          // TODO fix inconsistent number/string IDs
+          // TODO fix inconsistent number/string IDs (sort of fixed now)
           sessionIDs = sessionIDs.filter(session => session.id.toString() !== data.id.toString());
           store.set('sessionIDs', sessionIDs);
 
@@ -205,11 +204,6 @@ function createMainWindow() {
          * If not, send wait message 
          * When session is selected, put all connected players with an ID in the session
            * (Don't put them in the session if the controller doesn't have an ID yet)
-
-         * TODO better storage for players
-          probably store players separately, with different stats per session
-          session.players would then be an array of player IDs
-          only 
 
         */
         msg = JSON.parse(msg);

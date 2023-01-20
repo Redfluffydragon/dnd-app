@@ -108,7 +108,6 @@
           {/each}
         </select>
         <div class="buttons">
-          <!-- TODO -->
           <button type="button" class="dangerButton" on:click={deleteSession}
             >Delete</button
           >
