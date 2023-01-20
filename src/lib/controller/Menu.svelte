@@ -6,7 +6,7 @@
   const dispatch = createEventDispatcher();
 </script>
 
-<Menu inApp={false}>
+<Menu>
   <li>
     <Dropdown title="Change global name">
       <form
