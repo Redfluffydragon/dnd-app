@@ -348,7 +348,12 @@ function selectSession(session) {
       }
       // When the session starts, make sure all players are initialized
       if (players[id] && !players[id][session.id]) {
-        players[id][session.id] = {};
+        players[id][session.id] = {
+          position: {
+            x: 0,
+            y: 0,
+          },
+        };
         // If it just created a new field, update render
         mainwindow.webContents.send('players', JSON.stringify({
           type: 'updateplayer',
