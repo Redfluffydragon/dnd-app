@@ -36,12 +36,15 @@ function createMainWindow() {
     y: mws.y,
     width: mws.width,
     height: mws.height,
+
     title: 'D&D Main Screen',
     titleBarStyle: 'hidden',
     titleBarOverlay: {
       color: '#da3e3e',
       symbolColor: 'white',
     },
+
+    show: false,
 
     webPreferences: {
       nodeIntegration: true,
@@ -58,6 +61,8 @@ function createMainWindow() {
 
   if (isdev) loadVite(port);
   else loadURL(mainwindow);
+
+  mainwindow.once('ready-to-show', mainwindow.show);
 
   // get host computer local IP address to share
   const interfaces = os.networkInterfaces();
