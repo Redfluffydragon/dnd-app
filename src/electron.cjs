@@ -324,9 +324,10 @@ function notifyAllSockets(msg) {
 
 function selectSession(session) {
   if (session.players) {
-    for (const id in session.players) {
-      if (!sockets[id]) {
-        session.players[id].online = false;
+    for (const id of session.players) {
+      // When the session starts, make sure all players are initialized
+      if (players[id] && !players[id][session.id]) {
+        players[id][session.id] = {};
       }
     }
   }
