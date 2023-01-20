@@ -164,6 +164,7 @@
             }}
             type="text"
             name="name"
+            value={sessionName}
             required
           /></label
         >
