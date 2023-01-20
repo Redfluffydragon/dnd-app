@@ -25,6 +25,7 @@
     flex-direction: column;
     place-items: center;
     will-change: transform;
+    width: max-content;
   }
 
   .tag {
