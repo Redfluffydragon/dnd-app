@@ -200,9 +200,20 @@ function createMainWindow() {
           else {
             id = msg.id;
             // If it's not a new player, make sure the player exists
-            if (!Object.keys(players).includes(id)) {
+            // If there's no id, assume they're connecting from a new device or something and just try to match the name
+            // isNaN is to take care of the old ID scheme, could remove it if there are no more devices on that scheme
+            if (!id || isNaN(id)) {
+              for (const tempID in players) {
+                if (players[tempID].name === msg.name) {
+                  id = tempID;
+                }
+              }
+            }
+
+            // If no name matched, then conclude the player doesn't exist
+            if (!id || !Object.keys(players).includes(id)) {
               ws.send(response(400, {
-                msg: 'Player does not exist. Would you like to add a new player?',
+                msg: `Player ${msg.name || msg.id} does not exist. Would you like to add a new player?`,
               }));
               return;
             }
