@@ -97,6 +97,8 @@
           {/each}
         </select>
         <button>Select</button>
+        <!-- TODO -->
+        <button type="button">Delete</button>
       </form>
     {:else}
       <h2>{waitingMsg}</h2>
