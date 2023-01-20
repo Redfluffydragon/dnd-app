@@ -8,6 +8,7 @@
   import { players, session } from '$lib/stores';
 
   let showMenu;
+  let pinned;
   let showQR = false;
   let qrContainer;
 
@@ -26,6 +27,8 @@
   }
 
   function switchSession() {
+    if (!$session) return;
+
     ipc.send('session', JSON.stringify({
       type: 'switchsession',
     }));
@@ -35,11 +38,11 @@
       readyState: 'ready',
     }));
     $session = null;
-    showMenu = false;
+    !pinned && (showMenu = false);
   }
 </script>
 
-<Menu bind:showMenu>
+<Menu bind:showMenu bind:pinned>
   {#if $session}
     <h2>{$session.name}</h2>
   {/if}
@@ -48,7 +51,7 @@
       <canvas id="qr" />
     </Dropdown>
   </li>
-  <li><button on:click={switchSession}>Switch session</button></li>
+  <li><button on:click={switchSession}>Switch sessions</button></li>
   <li>
     <Dropdown title="Show players">
       {#if !$session}

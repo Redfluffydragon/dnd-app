@@ -16,6 +16,7 @@
   let error = '';
   let waitingMsg = 'Trying to connect...';
   let showMenu;
+  let pinned;
 
   onMount(() => {
     id = localStorage.getItem('dnd-id') || '';
@@ -52,7 +53,7 @@
         } else if (e.type === 'changeglobalname') {
           globalName = e.name;
           localStorage.setItem('dnd-name', globalName);
-          showMenu = false;
+          !pinned && (showMenu = false);
         }
       } else if (e.status === 503) {
         waitingMsg = 'Connected, waiting for session to start...';
@@ -108,7 +109,7 @@
   <meta name="theme-color" content="#da3e3e" />
 </svelte:head>
 
-<Menu bind:showMenu>
+<Menu bind:showMenu bind:pinned>
   <li>
     <Dropdown title="Change global name">
       <form
