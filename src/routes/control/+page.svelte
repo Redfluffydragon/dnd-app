@@ -225,7 +225,6 @@
         );
       }}
     />
-    <!-- todo add name change functionality -->
   </Column>
 {/if}
 
