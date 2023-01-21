@@ -297,7 +297,7 @@ function createMainWindow() {
 
           // Notify main window of player
           mainwindow.webContents.send('players', JSON.stringify({
-            type: 'addplayer',
+            type: 'updateplayer',
             id,
             player: players[id],
           }));

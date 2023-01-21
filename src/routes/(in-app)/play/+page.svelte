@@ -33,16 +33,12 @@
       if (msg.type === 'allplayers') {
         // keep local data first (maybe not the best approach)
         $players = { ...msg.players, ...$players };
-      } else if (msg.type === 'addplayer') {
-        // TODO consolidate addplayer and updateplayer
-        console.log('add player:', msg);
+      } else if (msg.type === 'updateplayer') {
         $players[msg.id] = msg.player;
       } else if (msg.type === 'playeronline') {
         $players[msg.id].online = true;
       } else if (msg.type === 'playeroffline') {
         $players[msg.id] && ($players[msg.id].online = false);
-      } else if (msg.type === 'updateplayer') {
-        $players[msg.id] = msg.player;
       }
     });
 
@@ -79,10 +75,13 @@
   function deleteSession(e) {
     // tell main the user clicked delete so main can show a dialog
     const id = new FormData(e.target.closest('form')).get('id');
-    ipc.send('session', JSON.stringify({
-      type: 'deletesession',
-      id,
-    }));
+    ipc.send(
+      'session',
+      JSON.stringify({
+        type: 'deletesession',
+        id,
+      })
+    );
   }
 </script>
 
