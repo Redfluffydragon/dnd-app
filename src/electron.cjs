@@ -71,8 +71,6 @@ function createMainWindow() {
     mainwindow = null;
   });
 
-  if (!isdev) mainwindow.removeMenu();
-  // else mainwindow.webContents.openDevTools();
   mws.manage(mainwindow);
 
   if (isdev) loadVite(vitePort);
