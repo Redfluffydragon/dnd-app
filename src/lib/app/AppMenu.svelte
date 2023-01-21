@@ -64,10 +64,6 @@
 </Menu>
 
 <style>
-  li button:hover {
-    background: rgba(0, 0, 0, 0.173);
-  }
-
   li button {
     width: 100%;
     text-align: left;
