@@ -35,8 +35,6 @@
         $players = { ...msg.players, ...$players };
       } else if (msg.type === 'updateplayer') {
         $players[msg.id] = msg.player;
-      } else if (msg.type === 'playeronline') {
-        $players[msg.id].online = true;
       } else if (msg.type === 'playeroffline') {
         $players[msg.id] && ($players[msg.id].online = false);
       }
