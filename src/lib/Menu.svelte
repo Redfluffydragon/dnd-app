@@ -116,7 +116,7 @@
     padding: 0 1ch;
   }
 
-  :global(menu li button:hover) {
+  :global(menu li button:hover:not(:disabled)) {
     background: rgba(0, 0, 0, 0.173);
   }
 
