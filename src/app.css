@@ -20,6 +20,10 @@ html {
   --secondary: hsl(0, 68%, 20%);
 }
 
+html[server] .app-only {
+  display: none;
+}
+
 body {
   margin: 0;
   line-height: 1.5;
