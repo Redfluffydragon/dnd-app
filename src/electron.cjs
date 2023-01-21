@@ -147,6 +147,7 @@ function createMainWindow() {
     else if (data.type === 'switchsession') {
       store.set(`sessions.${session.id}`, session);
       session = null;
+      clearInterval(loopID);
     }
     else if (data.type === 'deletesession') {
       const name = sessionIDs.find(session => session.id.toString() === data.id.toString()).name;
@@ -162,9 +163,9 @@ function createMainWindow() {
         ]
       }).then(confirm => {
         if (confirm.response === 0) {
-          const session = store.get(`sessions.${data.id}`);
-          if (session) {
-            store.set(`deleted.sessions.${data.id}`, session);
+          const tempSession = store.get(`sessions.${data.id}`);
+          if (tempSession) {
+            store.set(`deleted.sessions.${data.id}`, tempSession);
             store.delete(`sessions.${data.id}`);
           }
 
@@ -301,22 +302,7 @@ function createMainWindow() {
           }));
         }
         else if (msg.type === 'control') {
-          if (msg.direction) {
-            if (!players[msg.id][session.id]?.position) {
-              players[msg.id][session.id].position = {
-                x: 0,
-                y: 0,
-              };
-            }
-            players[msg.id][session.id].position.x += msg.direction.x;
-            players[msg.id][session.id].position.y += msg.direction.y;
-
-            mainwindow.webContents.send('control', response(200, {
-              id: msg.id,
-              position: players[msg.id][session.id].position,
-            }));
-          }
-          mainwindow.webContents.send('control', response(200, msg));
+          inputs[msg.id] = msg; // set to latest input each time, ignore other inputs
         }
         else if (msg.type === 'changeglobalname') {
           console.log('Change global name', msg.name);
@@ -409,6 +395,8 @@ function selectSession(session) {
       sessionName: players[id][session.id].name,
     }));
   }
+
+  loopID = setInterval(loop, 30); // worst game loop probably
 }
 
 function controllerDisconnect(ws) {
@@ -427,6 +415,28 @@ function save() {
   session && store.set(`sessions.${session.id}`, session);
 }
 
+function loop() {
+  for (const id in inputs) {
+    if (inputs[id].direction) {
+      // shouldn't need this because players are initialized correctly, right?
+      /* if (!players[id][session.id]?.position) {
+        players[id][session.id].position = {
+          x: 0,
+          y: 0,
+        };
+      } */
+      players[id][session.id].position.x += inputs[id].direction.x;
+      players[id][session.id].position.y += inputs[id].direction.y;
+
+      mainwindow.webContents.send('control', response(200, {
+        id: inputs[id].id,
+        position: players[id][session.id].position,
+      }));
+    }
+  }
+  inputs = {};
+}
+
 const store = new Store();
 console.log('Store location: ', app.getPath('userData'));
 
@@ -437,6 +447,9 @@ const players = store.get('players') || {}; // an array of player IDs
 
 // store sockets separately because they don't need to be persistently stored
 const sockets = {};
+
+let inputs = {}; // for buffering controller inputs
+let loopID;
 
 app.once("ready", createMainWindow);
 app.on("activate", () => { if (!mainwindow) createMainWindow(); });
