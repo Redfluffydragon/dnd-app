@@ -58,7 +58,7 @@
       <canvas id="qr" />
     </Dropdown>
   </li>
-  <li><button on:click={switchSession}>Switch sessions</button></li>
+  <li><button on:click={switchSession} disabled={!$session}>Switch sessions</button></li>
   <!-- TODO save confirmation of some sort -->
   <li><button on:click={save}>Save</button></li>
 </Menu>
