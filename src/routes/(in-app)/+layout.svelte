@@ -7,9 +7,10 @@
   import PlayerList from '$lib/PlayerList.svelte';
 
   onMount(() => {
-    // For dev, set the port to 3000
+    // For dev, set the port to 3000 + control page
+    // for prod, you should just be able to go to the IP address
     if (location.host.includes('localhost')) {
-      $port = ':3000';
+      $port = ':3000/control';
     }
 
     // notify main that the page is loaded

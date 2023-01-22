@@ -21,7 +21,7 @@
     if (showQR) {
       new qrious({
         element: document.getElementById('qr'),
-        value: `http://${$ip}${$port}/control`,
+        value: `http://${$ip}${$port}`,
         size: width,
       });
     }

@@ -184,13 +184,19 @@ function createMainWindow() {
 
   // Express server for controls
   const staticDir = isdev ? '/build' : '';
+  const staticMiddleware = express.static(path.join(__dirname, `..${staticDir}`));
   exApp
-    .use(express.static(path.join(__dirname, `..${staticDir}`)))
-    .get(/^\/([^\.]+)$/, (req, res) => {
-      // don't serve the play page from this server, only accessible from inside the app
-      // maybe change to 404? pretend it doesn't exist as a web page?
-      const slug = req.params[0] === 'play' ? 'out-of-app-error' : req.params[0];
-      res.sendFile(path.join(__dirname, `..${staticDir}/${slug || 'index'}.html`));
+    .get('/*', (req, res, next) => {
+      console.log(req.params);
+      if (req.params[0] === '') {
+        res.sendFile(path.join(__dirname, `..${staticDir}/control.html`));
+      }
+      else if (req.params[0].includes('.html') || !req.params[0].includes('.')) {
+        res.sendStatus(404);
+      }
+      else {
+        staticMiddleware(req, res, next);
+      }
     })
     .ws('/control', (ws, req) => {
       ws.on('message', msg => {

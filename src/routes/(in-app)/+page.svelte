@@ -53,7 +53,7 @@
     ip.subscribe(() => {
       new qrious({
         element: document.getElementById('controllerQR'),
-        value: `http://${$ip}${$port}/control`,
+        value: `http://${$ip}${$port}`,
         size: Math.min(window.innerWidth, window.innerHeight) * 0.33,
       });
     });
@@ -144,9 +144,8 @@
       <div class="center">
         <h2>Add controllers</h2>
         <p>
-          To add a player/controller, go to <a href="/control"
-            >{$ip ? `${$ip}${$port}/control` : 'control'}</a
-          >
+          <!-- TODO add an easier way to share the url (besides the QR code) - maybe a copy button or a share button? -->
+          To add a player/controller, go to {$ip ? `${$ip}${$port}` : 'control'}
           {#if $ip}
             <br /> or scan the QR code below
           {/if}
