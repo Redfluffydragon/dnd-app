@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import Column from '$lib/Column.svelte';
   import PlayerList from '$lib/PlayerList.svelte';
   import { ip, port, players, session } from '$lib/stores';
@@ -50,13 +50,12 @@
       }
     });
 
-    ip.subscribe(() => {
-      new qrious({
-        element: document.getElementById('controllerQR'),
-        value: `http://${$ip}${$port}`,
-        size: Math.min(window.innerWidth, window.innerHeight) * 0.33,
-      });
-    });
+    ip.subscribe(displayQR);
+
+    session.subscribe(async () => {
+      await tick();
+      !$session && displayQR();
+    })
   });
 
   function newSession(name) {
@@ -89,6 +88,14 @@
         id,
       })
     );
+  }
+
+  function displayQR() {
+    new qrious({
+      element: document.getElementById('controllerQR'),
+      value: `http://${$ip}${$port}`,
+      size: Math.min(window.innerWidth, window.innerHeight) * 0.33,
+    });
   }
 </script>
 
